@@ -4,14 +4,38 @@ import {
     View,
     Image,
     TextInput,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from 'react-native';
 import React, {useState} from 'react';
 
-export default function Login() {
+//Firebase auth
+import firebaseApp from '../login_auth';
+import {getAuth, signInWithEmailAndPassword} from 'firebase/auth'
+const auth = getAuth(firebaseApp)
+
+
+export default function Login(props) {
+
+    //Create status variable
+    const [email,setEmail] = useState()
+    const [password,setPassword] = useState()
+    
+    //Ruta para acceder a la pantalla de Home
+    const log_in = async() => {
+        try {
+            await signInWithEmailAndPassword(auth, email, password)
+            Alert.alert('Sesion Iniciada')            
+            props.navigation.navigate('Home')
+        } catch (error) {
+            console.log(error);
+            Alert.alert('El usuario o la contraseña son incorrectos.')            
+                                
+        }
+    }
 
     return (
-        <View style={styles.main}>
+        <View style={styles.main_style}>
 
             <View>
                 <Image source={require('../assets/logo.png')} style={styles.logo}/>
@@ -20,29 +44,33 @@ export default function Login() {
             <View style={styles.login_box}>
 
                 <View style={styles.textBox}>
-                    <TextInput
-                        placeholder='email@gmail.com'
-                        style={{
+                    <TextInput placeholder='Email@gmail.com' 
+                    style={{
                         paddingHorizontal: 15
-                    }}></TextInput>
+                    }}  
+                    onChangeText={(text)=>setEmail(text)} />
 
                 </View>
 
                 <View style={styles.textBox}>
                     <TextInput
-                        placeholder='password'
+                        placeholder='Password'
                         style={{
                         paddingHorizontal: 15
-                    }}></TextInput>
+                    }}
+                        onChangeText={(text)=>setPassword(text)}
+                        secureTextEntry={true} />
                 </View>
-
+                
                 <View style={styles.mainButton}>
-                    <TouchableOpacity style={styles.button_box}>
+                    
+                    <TouchableOpacity style={styles.button_box} onPress={log_in}>
 
                         <Text style={styles.textButton}>Sign In</Text>
 
                     </TouchableOpacity>
                 </View>
+                
             </View>
 
         </View>
@@ -50,7 +78,7 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-    main: {
+    main_style: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -105,6 +133,7 @@ const styles = StyleSheet.create({
     textButton: {
         textAlign: 'center',
         color: 'white'
-    }
+    },
+   
 
 });
