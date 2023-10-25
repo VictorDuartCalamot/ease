@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     tarjeta:{
         margin:20,
         backgroundColor:'white',
-        borderRadious:20,
+        //borderRadious:20,
         width:'90%',
         padding:20,
         shadowColor:'#000',

@@ -1,3 +1,4 @@
+Mobile app with react native
 //Packages installed
 
 //React Navigation
