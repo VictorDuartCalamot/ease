@@ -1,0 +1,20 @@
+//Packages installed
+
+//React Navigation
+Url: https://reactnavigation.org/docs/getting-started
+//Installation
+npm install @react-navigation/native
+//Expo dependences 
+npx expo install react-native-screens react-native-safe-area-context
+
+//Stack Navigator
+Url: https://reactnavigation.org/docs/stack-navigator
+//Installation
+npm install @react-navigation/stack
+//Expo dependences
+npx expo install react-native-gesture-handler
+
+
+//Por si se queda pillado en el puerto 5554
+adb kill-server
+adb start-server
