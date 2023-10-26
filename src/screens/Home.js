@@ -4,11 +4,21 @@ import React from 'react';
 export default function Home() { 
   
     return (
-        <View>
-            <Text>Home</Text>
+        <View style={styles.mainStyle}>
+            <View>
+                <Text style={{textAlign:'center'}}>WIP</Text>
+            </View>
         </View>
     )
 }
 
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    mainStyle: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#FCFCFC'
+    },
+
+})
