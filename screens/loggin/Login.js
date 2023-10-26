@@ -10,9 +10,10 @@ import {
 import React, {useState} from 'react';
 
 //Firebase auth
-import firebaseApp from '../login_auth';
-import {getAuth, signInWithEmailAndPassword} from 'firebase/auth'
-const auth = getAuth(firebaseApp)
+import firebaseApp from '../../../firebase/firebaseConfig';
+import {firebaseAuth} from '../../../firebase/firebaseConfig';
+import {signInWithEmailAndPassword} from 'firebase/auth'
+
 
 
 export default function Login(props) {
@@ -22,9 +23,9 @@ export default function Login(props) {
     const [password,setPassword] = useState()
     
     //Ruta para acceder a la pantalla de Home
-    const log_in = async() => {
+    const loginUser = async() => {
         try {
-            await signInWithEmailAndPassword(auth, email, password)
+            await signInWithEmailAndPassword(firebaseAuth, email, password)
             Alert.alert('Sesion Iniciada')            
             props.navigation.navigate('Home')
         } catch (error) {
@@ -38,7 +39,7 @@ export default function Login(props) {
         <View style={styles.main_style}>
 
             <View>
-                <Image source={require('../assets/logo.png')} style={styles.logo}/>
+                <Image source={require('../../../assets/logo.png')} style={styles.logo}/>
             </View>
 
             <View style={styles.login_box}>
@@ -64,11 +65,21 @@ export default function Login(props) {
                 
                 <View style={styles.mainButton}>
                     
-                    <TouchableOpacity style={styles.button_box} onPress={log_in}>
+                    <TouchableOpacity style={styles.button_box} onPress={loginUser}>
 
                         <Text style={styles.textButton}>Sign In</Text>
 
                     </TouchableOpacity>
+                </View>
+
+                <View >
+                    
+                     <Text style={styles.signUpTxt}>
+                        Don't have an account?                        
+                         <Text style={{color: 'blue'}} onPress={()=>props.navigation.navigate('SignUp')}> Sign Up</Text>
+                         
+
+                     </Text>   
                 </View>
                 
             </View>
@@ -133,6 +144,10 @@ const styles = StyleSheet.create({
     textButton: {
         textAlign: 'center',
         color: 'white'
+    },
+    signUpTxt:{
+        marginTop:20,
+        textAlign:'center',
     },
    
 
