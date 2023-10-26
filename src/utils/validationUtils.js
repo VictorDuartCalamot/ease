@@ -1,4 +1,4 @@
-import { firebase } from '../../../firebase/firebaseConfig';
+import { firebase } from '../../firebase/firebaseConfig';
 
 //Check if the password contains the minimum requirements
 export function isPasswordValid(password) {

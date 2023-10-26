@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
-import { firebase } from '../../../firebaseConfig/firebaseConfig';
+import { firebase } from '../../firebase/firebaseConfig';
 import { isPasswordValid, isEmailAlreadyRegistered } from './validationUtils'; // Adjust the path as needed
-import admin from 'firebase-admin';
+//import admin from 'firebase-admin';
 export async function registerUser(username, surname, email, password, confirmPassword) {
   if (!isPasswordValid(password)) {
     Alert.alert('Invalid Password', 'The password must contain 1 Uppercase letter, .');
@@ -24,7 +24,7 @@ export async function registerUser(username, surname, email, password, confirmPa
     const user = userCredential.user;
 
     //Set custom claims for the user role
-    await admin.auth().setCustomUserClaims(user.uid, {role: 'user'});
+    await firebase.admin.auth().setCustomUserClaims(user.uid, {role: 'user'});
 
     // Send email verification
     await firebase.auth().currentUser.sendEmailVerification({
