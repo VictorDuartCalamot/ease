@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { firebase } from './firebase/firebaseConfig';
 
 //Routes
-import Home from './src/screens/Home';
+import Home from './src/screens/main/Home';
 import Login from './src/screens/loggin/Login';
 import SignUp from './src/screens/loggin/SignUp';
 
