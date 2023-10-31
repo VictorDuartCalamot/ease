@@ -78,9 +78,15 @@ export default function Login(props) {
                         Don't have an account?                        
                          <Text style={{color: 'blue'}} onPress={()=>props.navigation.navigate('SignUp')}> Sign Up</Text>
                          
-
                      </Text>   
                 </View>
+
+                <View >
+                                                          
+                         <Text style={styles.signUpTxt} onPress={()=>props.navigation.navigate('Home')}> Sign Up</Text>
+                                             
+                </View>
+                
                 
             </View>
 
