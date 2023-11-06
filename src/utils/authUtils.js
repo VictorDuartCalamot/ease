@@ -1,6 +1,7 @@
 import { Alert } from 'react-native';
-import { firebase } from '../../firebase/firebaseConfig';
+import { firebase,database } from '../../firebase/firebaseConfig';
 import { isPasswordValid, isEmailAlreadyRegistered } from './validationUtils'; // Adjust the path as needed
+import { collection, addDoc } from "firebase/firestore";
 //import admin from 'firebase-admin';
 export async function registerUser(username, surname, email, password, confirmPassword) {
   if (!isPasswordValid(password)) {
@@ -19,10 +20,12 @@ export async function registerUser(username, surname, email, password, confirmPa
   }
 
   try {
+    
     //Create user in firebase authentication
     const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
     const user = userCredential.user;
-
+    
+/*
     //Set custom claims for the user role
     await firebase.admin.auth().setCustomUserClaims(user.uid, {role: 'user'});
 
@@ -32,22 +35,16 @@ export async function registerUser(username, surname, email, password, confirmPa
       url: 'ease-8d84a.firebaseapp.com', // Update with your verification URL
     });
 
-    Alert.alert('Verification email sent');
-
-    //Conection to the firestore database
-    const db = firebase.firestore();
-    // Reference to the users collection
-    const usersCollection = db.collection('users');
+    Alert.alert('Verification email sent'); 
+    */ 
     const userData = {
       username: username,
       surname: surname,
       email: email,
       role:'user',
-      SignUpDate: new Date().toLocaleString(),
-
+      SignUpDate: new Date(),
     };
-    const docRef = await usersCollection.add(userData);
-    console.log('User document added with ID: ', docRef.id);
+    const docRef = await addDoc(collection(database, "users"), userData);
 
     // Registration successful
   } catch (error) {

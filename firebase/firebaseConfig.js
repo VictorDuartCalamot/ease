@@ -32,7 +32,7 @@ if (!firebase.apps.length){
 }
 export {firebase};
 
-export const firebaseApp = initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuth = getAuth(firebaseApp);
 export const database = initializeFirestore(firebaseApp, {
   experimentalForceLongPolling: true,
