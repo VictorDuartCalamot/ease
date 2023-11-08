@@ -26,8 +26,11 @@ export default function Login(props) {
     const loginUser = async() => {
         try {
             await signInWithEmailAndPassword(firebaseAuth, email, password)
-            Alert.alert('Sesion Iniciada')            
+            Alert.alert('Sesion Iniciada')
+                                    
             props.navigation.navigate('Home')
+
+            
         } catch (error) {
             console.log(error);
             Alert.alert('El usuario o la contraseña son incorrectos.')            

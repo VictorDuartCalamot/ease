@@ -33,7 +33,13 @@ function App() {
   },[]);
 
   if (initializing) return null;
-
+  firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    
+    console.log('User email: ', user.email);
+  }
+});
+  
   if (!user){
     return (
       <Stack.Navigator>
@@ -49,15 +55,16 @@ function App() {
         /> 
       </Stack.Navigator>
     );
-  } return(
-    <Stack.Navigator>   
-    <Stack.Screen name="Home" component={Home}
-        options={{
-          headerShown:false,
-        }}
-        />
-    </Stack.Navigator>   
-  )
+  }else {
+    return(
+      <Stack.Navigator>   
+      <Stack.Screen name="Home" component={Home}
+          options={{
+            headerShown:false,
+          }}
+          />
+      </Stack.Navigator>   
+  )}
 
   
   }

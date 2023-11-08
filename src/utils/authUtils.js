@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 import { firebase,database } from '../../firebase/firebaseConfig';
 import { isPasswordValid, isEmailAlreadyRegistered } from './validationUtils'; // Adjust the path as needed
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 //import admin from 'firebase-admin';
 export async function registerUser(username, surname, email, password, confirmPassword) {
   if (!isPasswordValid(password)) {
@@ -37,14 +37,19 @@ export async function registerUser(username, surname, email, password, confirmPa
 
     Alert.alert('Verification email sent'); 
     */ 
-    const userData = {
+    const userData = {      
       username: username,
       surname: surname,
       email: email,
       role:'user',
       SignUpDate: new Date(),
     };
-    const docRef = await addDoc(collection(database, "users"), userData);
+
+    //Add document in firestore with a random document ID
+    //const docRef = await addDoc(collection(database, "users"), userData); 
+
+    //Add document in firestore with the document ID as the user ID
+    const docRef = await setDoc(doc(database, "users", user.uid),{userData});
 
     // Registration successful
   } catch (error) {
