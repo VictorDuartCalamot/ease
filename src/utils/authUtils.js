@@ -1,7 +1,14 @@
 import { Alert } from 'react-native';
-import { firebase,database } from '../../firebase/firebaseConfig';
+
 import { isPasswordValid, isEmailAlreadyRegistered } from './validationUtils'; // Adjust the path as needed
-import { collection, addDoc, setDoc, doc } from "firebase/firestore";
+
+//Firebase
+import { firebase,database,db } from '../../firebase/firebaseConfig';
+import { collection, addDoc, setDoc, doc,getDocs,getDoc,query, where } from "firebase/firestore";
+
+//Device Info
+import * as Device from 'expo-device';
+
 //import admin from 'firebase-admin';
 export async function registerUser(username, surname, email, password, confirmPassword) {
   if (!isPasswordValid(password)) {
@@ -25,8 +32,9 @@ export async function registerUser(username, surname, email, password, confirmPa
     const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
     const user = userCredential.user;
     
-/*
+
     //Set custom claims for the user role
+    /*
     await firebase.admin.auth().setCustomUserClaims(user.uid, {role: 'user'});
 
     // Send email verification
@@ -35,47 +43,67 @@ export async function registerUser(username, surname, email, password, confirmPa
       url: 'ease-8d84a.firebaseapp.com', // Update with your verification URL
     });
 
-    Alert.alert('Verification email sent'); 
-    */ 
-    const userData = {      
-      username: username,
-      surname: surname,
-      email: email,
-      role:'user',
-      SignUpDate: new Date(),
-    };
+    database.collection('roles').doc('user').get();
+    Alert.alert('Verification email sent'); */
+    
 
-    //Add document in firestore with a random document ID
-    //const docRef = await addDoc(collection(database, "users"), userData); 
+    const docRef2 = doc(database, "roles", "User");
+    const docSnap = await getDoc(docRef2);
+    const userRole = await docSnap.get('Role');
+    
+    if (docSnap.exists()) {   
+      const userData = {      
+        username: username,
+        surname: surname,
+        email: email,
+        role: userRole,
+        SignUpDate: new Date(),
+        Blocked: false,
+      };
+  
+      //Add document in firestore with the document ID as the user ID
+      const docRef = await setDoc(doc(database, "users", user.uid),userData);
 
-    //Add document in firestore with the document ID as the user ID
-    const docRef = await setDoc(doc(database, "users", user.uid),{userData});
+    } else {
+      // docSnap.data() will be undefined in this case
+      console.log("No such document!");
+    }
+
+
+   
 
     // Registration successful
   } catch (error) {
     Alert.alert('Registration Error', error.message);
   }
 
-    /*
-    usersCollection.add(userData)
-    .then((docRef) => {
-      console.log('User document added with ID: ', docRef.id);
-    })
-    .catch((error) => {
-      console.error('Error adding user document: ', error);
-    });*/
-/*
-    // Store user data in Firestore
-    await firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).set({
-      username,
-      surname,
-      email,
-      role:'user',
-      SignUpDate: new Date().toLocaleString(),
-    });*/
+}
 
-    // Registration successful
-  /*} catch (error) {
-    Alert.alert('Registration Error', error.message);
-  }*/
+export async function getUserDocIdWithEmail(email) {
+  const q = query(collection(database, "users"), where("email", "==", email));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+  console.log(doc.id);
+  return doc.id;
+});};
+
+export async function shouldBlockUser(email){ 
+  const userID = getUserDocIdWithEmail(email);
+
+}
+
+/*export async function getDeviceInfo(){
+  DeviceInfo.getBaseOs().then((baseOs) => {
+    console.log(baseOs);
+  });
+} */
+export async function LoginHistory(email,isLoggedIn) {
+  firebase.firestore().collection('users').doc(getUserDocIdWithEmail(email)).collection('login_History').add({
+    successfulLogin: isLoggedIn,
+    loginDate: new Date(),
+    deviceType: Device.deviceType,
+    deviceManufacturer: Device.manufacturer,
+    deviceOS: Device.osName,
+    isRealDevice: Device.isDevice,
+  })
 }

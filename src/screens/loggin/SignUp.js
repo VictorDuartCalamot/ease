@@ -1,7 +1,7 @@
 import { Text, StyleSheet, View, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { registerUser } from '../../utils/authUtils'; // Update the path as needed
-import { isPasswordValid,isEmailAlreadyRegistered } from '../../utils/validationUtils'; // Update the path as needed
+import { isPasswordValid,isEmailAlreadyRegistered, isEmailValid} from '../../utils/validationUtils'; // Update the path as needed
 
 const SignUP = () => {
   const [username, setUserName] = useState('');
@@ -9,13 +9,29 @@ const SignUP = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isUsernameBlank, setUserNameRequiredMessage] = useState('');
+  const [isSurnameBlank, setSurnameRequiredMessage] = useState('');
   const [passwordRequirementsMessage, setPasswordRequirementsMessage] = useState('');
   const [emailAlreadyRegisteredMessage, setEmailAlreadyRegisteredMessage] = useState('');
 
-  const handleRegister = async () => {
+  const handleRegister = async () => { 
+    setUserNameRequiredMessage(''); // Reset the username required message
+    setSurnameRequiredMessage('');
     setEmailAlreadyRegisteredMessage(''); // Reset the email already registered message
     setPasswordRequirementsMessage(''); // Reset the password requirements message
+    if (!username){
+      setUserNameRequiredMessage('Username is required');      
+      return;
+    }
+    if (!surname){
+      setSurnameRequiredMessage('Surname is required');
+      return;
+    }
 
+    if (!isEmailValid(email)) {
+      setEmailAlreadyRegisteredMessage('Email is not valid. Please use a valid email address.');
+      return;
+    }
     // Check if email is already registered here
     if (await isEmailAlreadyRegistered(email)) {
       setEmailAlreadyRegisteredMessage('Email is already registered. Please use a different email address.');
@@ -107,12 +123,19 @@ const SignUP = () => {
             <Text style={styles.textButton}>Sign Up</Text>
           </TouchableOpacity>
         </View>
-        {passwordRequirementsMessage ? (
-          <Text style={styles.passwordRequirementsMessage}>{passwordRequirementsMessage}</Text>
+        {isUsernameBlank ? (
+          <Text style={styles.RequirementsMessage}>{isUsernameBlank}</Text>
+        ) : null}
+        {isSurnameBlank ? (
+          <Text style={styles.RequirementsMessage}>{isSurnameBlank}</Text>
         ) : null}
         {emailAlreadyRegisteredMessage ? (
-          <Text style={styles.emailAlreadyRegisteredMessage}>{emailAlreadyRegisteredMessage}</Text>
+          <Text style={styles.RequirementsMessage}>{emailAlreadyRegisteredMessage}</Text>
         ) : null}
+        {passwordRequirementsMessage ? (
+          <Text style={styles.RequirementsMessage}>{passwordRequirementsMessage}</Text>
+        ) : null}
+        
       </View>
     </View>
   );
@@ -181,14 +204,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     textAlign: 'center',
   },
-  passwordRequirementsMessage: {
+  RequirementsMessage: {
     marginTop: 10,
     color: 'red',
     textAlign: 'center',
   },
-  emailAlreadyRegisteredMessage: {
-    marginTop: 10,
-    color: 'red',
-    textAlign: 'center',
-  },
+
 });

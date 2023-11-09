@@ -1,5 +1,6 @@
 import { firebase } from '../../firebase/firebaseConfig';
 
+
 //Check if the password contains the minimum requirements
 export function isPasswordValid(password) {
   const hasNumber = /\d/;
@@ -15,7 +16,12 @@ export function isPasswordValid(password) {
   );
 }
 
-
+export function isEmailValid(email) {
+  const hasSymbol = /[@]/;
+  return(
+    hasSymbol.test(email)
+  );
+}
 //Checks if the email is already registered in the firebase database
 export async function isEmailAlreadyRegistered(email) {
   const snapshot = await firebase.firestore().collection('users').where('email', '==', email).get();

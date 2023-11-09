@@ -17,7 +17,6 @@ const Stack = createStackNavigator();
 function App() {
 
   //If the user have been authenticated already, will go to the home screen.
-
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
 
@@ -33,13 +32,7 @@ function App() {
   },[]);
 
   if (initializing) return null;
-  firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    
-    console.log('User email: ', user.email);
-  }
-});
-  
+
   if (!user){
     return (
       <Stack.Navigator>

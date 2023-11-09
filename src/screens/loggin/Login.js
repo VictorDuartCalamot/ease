@@ -13,29 +13,36 @@ import React, {useState} from 'react';
 import firebaseApp from '../../../firebase/firebaseConfig';
 import {firebaseAuth} from '../../../firebase/firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth'
+import {shouldBlockUser,LoginHistory} from '../../utils/authUtils';
 
 
 
 export default function Login(props) {
 
     //Create status variable
-    const [email,setEmail] = useState()
-    const [password,setPassword] = useState()
+    const [email,setEmail] = useState();
+    const [password,setPassword] = useState();
+    const [isEmailBlank, setIsEmailBlank] = useState();
     
     //Ruta para acceder a la pantalla de Home
+    
     const loginUser = async() => {
-        try {
-            await signInWithEmailAndPassword(firebaseAuth, email, password)
-            Alert.alert('Sesion Iniciada')
-                                    
-            props.navigation.navigate('Home')
-
-            
-        } catch (error) {
-            console.log(error);
-            Alert.alert('El usuario o la contraseña son incorrectos.')            
-                                
+        setIsEmailBlank('');
+        if (email){
+            try {
+                await signInWithEmailAndPassword(firebaseAuth, email, password)
+                Alert.alert('Sesion Iniciada')
+                LoginHistory(email,true)                        
+                props.navigation.navigate('Home')        
+            } catch (error) {
+                console.log(error);
+                LoginHistory(email,false)
+                Alert.alert('El usuario o la contraseña son incorrectos.')                                               
+            }
+        }else{
+            setIsEmailBlank('Please enter your email address')
         }
+        
     }
 
     return (
@@ -65,6 +72,10 @@ export default function Login(props) {
                         onChangeText={(text)=>setPassword(text)}
                         secureTextEntry={true} />
                 </View>
+
+                {isEmailBlank ? (
+                    <Text style={styles.RequirementsMessage}>{isEmailBlank}</Text>
+                ) : null}
                 
                 <View style={styles.mainButton}>
                     
@@ -79,9 +90,7 @@ export default function Login(props) {
                     
                      <Text style={styles.signUpTxt}>
                         Don't have an account?                        
-                         <Text style={{color: 'blue'}} onPress={()=>props.navigation.navigate('SignUp')}> Sign Up</Text>
-                         
-
+                         <Text style={{color: 'blue'}} onPress={()=>props.navigation.navigate('SignUp')}> Sign Up</Text>                         
                      </Text>   
                 </View>
                 
@@ -152,6 +161,9 @@ const styles = StyleSheet.create({
         marginTop:20,
         textAlign:'center',
     },
-   
-
+    RequirementsMessage: {
+        marginTop: 10,
+        color: 'red',
+        textAlign: 'center',
+      },   
 });

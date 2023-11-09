@@ -6,7 +6,7 @@ import { getAuth } from "firebase/auth";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import { initializeFirestore } from "firebase/firestore";
+import { initializeFirestore, getFirestore } from "firebase/firestore";
 import Constants from "expo-constants";
 //import { getAnalytics } from "firebase/analytics";
 
@@ -38,8 +38,4 @@ export const database = initializeFirestore(firebaseApp, {
   experimentalForceLongPolling: true,
 });
 
-//export const fireStoreDB = getFirestore(firebaseApp);
-
-
-
-//export default firebaseApp;
+export const db = getFirestore(firebaseApp);
