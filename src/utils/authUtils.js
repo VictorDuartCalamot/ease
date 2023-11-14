@@ -3,8 +3,8 @@ import { Alert } from 'react-native';
 import { isPasswordValid, isEmailAlreadyRegistered } from './validationUtils'; // Adjust the path as needed
 
 //Firebase
-import { firebase,database,db } from '../../firebase/firebaseConfig';
-import { collection, addDoc, setDoc, doc,getDocs,getDoc,query, where } from "firebase/firestore";
+import { firebase,database } from '../../firebase/firebaseConfig';
+import { collection, addDoc, setDoc, doc,getDocs,getDoc,query, where, Query, CollectionReference } from "firebase/firestore";
 
 //Device Info
 import * as Device from 'expo-device';
@@ -79,31 +79,72 @@ export async function registerUser(username, surname, email, password, confirmPa
 
 }
 
-export async function getUserDocIdWithEmail(email) {
+/*export async function getUserDocIdWithEmail(email) {
   const q = query(collection(database, "users"), where("email", "==", email));
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
   console.log(doc.id);
   return doc.id;
-});};
+});};*/
+
+export async function getUserDocIdWithEmail(email) {
+  const q = query(collection(database, "users"), where("email", "==", email));
+  const querySnapshot = await getDocs(q);
+
+  const docIds = [];
+
+  querySnapshot.forEach((doc) => {
+    docIds.push(doc.id);
+  });
+
+  if (docIds.length > 0) {
+    console.log(docIds[0]);
+    return docIds[0];
+  } else {
+    // Handle the case where no matching document is found
+    console.error('No matching user document found for email:', email);
+    return null; // or throw an error or handle it in your application logic
+  }
+}
 
 export async function shouldBlockUser(email){ 
   const userID = getUserDocIdWithEmail(email);
 
 }
 
-/*export async function getDeviceInfo(){
-  DeviceInfo.getBaseOs().then((baseOs) => {
-    console.log(baseOs);
-  });
-} */
-export async function LoginHistory(email,isLoggedIn) {
-  firebase.firestore().collection('users').doc(getUserDocIdWithEmail(email)).collection('login_History').add({
+export async function LoginHistoryRegistry(email, isLoggedIn) {
+  const db = firebase.firestore();
+  const logginDate = new Date();
+  const logginInfo = {
     successfulLogin: isLoggedIn,
-    loginDate: new Date(),
+    loginDate: logginDate,
     deviceType: Device.deviceType,
     deviceManufacturer: Device.manufacturer,
     deviceOS: Device.osName,
     isRealDevice: Device.isDevice,
-  })
+  };
+
+  try {
+    const userDocId = await getUserDocIdWithEmail(email);
+
+    if (userDocId) {
+      const userRef = db.collection('users').doc(userDocId);
+      const logginHistoryCollectionRef = userRef.collection('logginHistory');
+
+      // Convert the date to a string
+      const dateString = logginDate.toISOString();
+
+      // Add a new document to the 'logginHistory' sub-collection
+      await logginHistoryCollectionRef.doc(dateString).set(logginInfo);
+
+      console.log('Created new login registry');
+    } else {
+      console.log('No matching user document found for email:', email);
+    }
+  } catch (error) {
+    console.log('Failed to create a new login registry');
+    console.error(error);
+  }
+
+  //db.collection('users/'+ getUserDocIdWithEmail(email)).doc('login_History').set({})
 }

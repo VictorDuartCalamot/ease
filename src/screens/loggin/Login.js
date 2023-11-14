@@ -13,7 +13,7 @@ import React, {useState} from 'react';
 import firebaseApp from '../../../firebase/firebaseConfig';
 import {firebaseAuth} from '../../../firebase/firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth'
-import {shouldBlockUser,LoginHistory} from '../../utils/authUtils';
+import {shouldBlockUser,LoginHistoryRegistry} from '../../utils/authUtils';
 
 
 
@@ -32,11 +32,11 @@ export default function Login(props) {
             try {
                 await signInWithEmailAndPassword(firebaseAuth, email, password)
                 Alert.alert('Sesion Iniciada')
-                LoginHistory(email,true)                        
+                LoginHistoryRegistry(email,true)                        
                 props.navigation.navigate('Home')        
             } catch (error) {
                 console.log(error);
-                LoginHistory(email,false)
+                LoginHistoryRegistry(email,false)
                 Alert.alert('El usuario o la contraseña son incorrectos.')                                               
             }
         }else{

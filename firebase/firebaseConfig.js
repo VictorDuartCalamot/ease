@@ -34,8 +34,10 @@ export {firebase};
 
 const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuth = getAuth(firebaseApp);
-export const database = initializeFirestore(firebaseApp, {
+export const database = getFirestore(firebaseApp);
+/*export const database = initializeFirestore(firebaseApp, {
   experimentalForceLongPolling: true,
 });
 
-export const db = getFirestore(firebaseApp);
+*/
+
