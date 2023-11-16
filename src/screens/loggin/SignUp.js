@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { registerUser } from '../../utils/authUtils'; // Update the path as needed
 import { isPasswordValid,isEmailAlreadyRegistered, isEmailValid} from '../../utils/validationUtils'; // Update the path as needed
 
-const SignUP = () => {
+export default SignUP = (props) => {
   const [username, setUserName] = useState('');
   const [surname, setSurname] = useState('');
   const [email, setEmail] = useState('');
@@ -15,6 +15,7 @@ const SignUP = () => {
   const [emailAlreadyRegisteredMessage, setEmailAlreadyRegisteredMessage] = useState('');
 
   const handleRegister = async () => { 
+    
     setUserNameRequiredMessage(''); // Reset the username required message
     setSurnameRequiredMessage('');
     setEmailAlreadyRegisteredMessage(''); // Reset the email already registered message
@@ -51,6 +52,7 @@ const SignUP = () => {
 
     try {
       await registerUser(username, surname, email, password, confirmPassword);
+      props.navigation.navigate('Login');
     } catch (error) {
       Alert.alert('Registration Error', error.message);
     }
@@ -141,7 +143,7 @@ const SignUP = () => {
   );
 };
 
-export default SignUP;
+
 
 const styles = StyleSheet.create({
   main_style: {

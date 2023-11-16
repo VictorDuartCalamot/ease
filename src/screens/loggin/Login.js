@@ -13,7 +13,8 @@ import React, {useState} from 'react';
 import firebaseApp from '../../../firebase/firebaseConfig';
 import {firebaseAuth} from '../../../firebase/firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth'
-import {shouldBlockUser,LoginHistoryRegistry} from '../../utils/authUtils';
+import {BlockUnblockUser,LoginHistoryRegistry, isAccBlocked,getUserDocIdWithEmail} from '../../utils/authUtils';
+import {isEmailAlreadyRegistered} from '../../utils/validationUtils';
 
 
 
@@ -23,26 +24,38 @@ export default function Login(props) {
     const [email,setEmail] = useState();
     const [password,setPassword] = useState();
     const [isEmailBlank, setIsEmailBlank] = useState();
-    
+    const [blockAccCounter, setBlockAccCounter] = useState(1);
+    const [blockedAccMsg,setBlockedAccMsg] = useState();    
     //Ruta para acceder a la pantalla de Home
     
-    const loginUser = async() => {
+    const loginUser = async() => {                 
         setIsEmailBlank('');
-        if (email){
-            try {
-                await signInWithEmailAndPassword(firebaseAuth, email, password)
-                Alert.alert('Sesion Iniciada')
-                LoginHistoryRegistry(email,true)                        
-                props.navigation.navigate('Home')        
-            } catch (error) {
-                console.log(error);
-                LoginHistoryRegistry(email,false)
-                Alert.alert('El usuario o la contraseña son incorrectos.')                                               
-            }
-        }else{
-            setIsEmailBlank('Please enter your email address')
-        }
-        
+        setBlockedAccMsg('');         
+        if (await isEmailAlreadyRegistered(email)){            
+            if(!await isAccBlocked(email)){
+                try {
+                    await signInWithEmailAndPassword(firebaseAuth, email, password)
+                    Alert.alert('Sesion Iniciada')
+                    LoginHistoryRegistry(email,true)                                                    
+                } catch (error) {
+                    setIsEmailBlank('Email or password incorrect, please try again.')  
+                    console.log(error);                
+                    LoginHistoryRegistry(email,false,'Incorrect password.')
+                    //Gets the previous state of the BlockAccCounter and increments it +1 
+                    setBlockAccCounter((prevCounter) => prevCounter + 1); 
+                    console.log("Counter: "+blockAccCounter);
+                    if (blockAccCounter >= 3){
+                        BlockUnblockUser(email, true);
+                        setIsEmailBlank('');
+                        setBlockedAccMsg('The account has been blocked, maximum loggin attempts reached.\nPlease contact with an administrator to unblock your account.');                                            
+                    }                                                                                                    
+                }
+            }else{
+                setBlockedAccMsg('Your account is blocked, please contact an administrator to unblock your account');
+            }                        
+        }else{            
+            setIsEmailBlank('Please enter a valid email address')
+        }        
     }
 
     return (
@@ -75,6 +88,9 @@ export default function Login(props) {
 
                 {isEmailBlank ? (
                     <Text style={styles.RequirementsMessage}>{isEmailBlank}</Text>
+                ) : null}
+                {blockedAccMsg ? (
+                    <Text style={styles.RequirementsMessage}>{blockedAccMsg}</Text>
                 ) : null}
                 
                 <View style={styles.mainButton}>

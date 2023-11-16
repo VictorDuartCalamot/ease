@@ -16,15 +16,9 @@ export function isPasswordValid(password) {
   );
 }
 
-export function isEmailValid(email) {
-  const hasSymbol = /[@]/;
-  return(
-    hasSymbol.test(email)
-  );
-}
-//Checks if the email is already registered in the firebase database
+//Checks if the email is already registered in the firebase database returns true if exists
 export async function isEmailAlreadyRegistered(email) {
-  const snapshot = await firebase.firestore().collection('users').where('email', '==', email).get();
-  return !snapshot.empty;
+  const snapshot = await firebase.firestore().collection('users').where('email', '==', email).get();      
+  return !snapshot.empty;  
 }
 
