@@ -1,7 +1,7 @@
 import { Text, StyleSheet, View, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react';
-import { registerUser } from '../../utils/authUtils'; // Update the path as needed
-import { isPasswordValid,isEmailAlreadyRegistered, isEmailValid} from '../../utils/validationUtils'; // Update the path as needed
+import { registerUser } from '../../utils/dbUtils'; // Update the path as needed
+import { isPasswordValid,EmailExists} from '../../utils/validationUtils'; // Update the path as needed
 
 export default SignUP = (props) => {
   const [username, setUserName] = useState('');
@@ -13,6 +13,9 @@ export default SignUP = (props) => {
   const [isSurnameBlank, setSurnameRequiredMessage] = useState('');
   const [passwordRequirementsMessage, setPasswordRequirementsMessage] = useState('');
   const [emailAlreadyRegisteredMessage, setEmailAlreadyRegisteredMessage] = useState('');
+  const [validEmail,setValidEmail] = useState('');
+  const [validPassword,setValidPassword]=useState('');
+
 
   const handleRegister = async () => { 
     
@@ -28,15 +31,17 @@ export default SignUP = (props) => {
       setSurnameRequiredMessage('Surname is required');
       return;
     }
-
-    if (!isEmailValid(email)) {
-      setEmailAlreadyRegisteredMessage('Email is not valid. Please use a valid email address.');
-      return;
-    }
+   
     // Check if email is already registered here
-    if (await isEmailAlreadyRegistered(email)) {
-      setEmailAlreadyRegisteredMessage('Email is already registered. Please use a different email address.');
+    if (email == null || email == ''){
+      if (await EmailExists(email)) {
+        setEmailAlreadyRegisteredMessage('Email is already registered. Please use a different email address.');
       return;
+      }else{
+        setValidEmail(true);
+      }   
+    }else {
+      setEmailAlreadyRegisteredMessage('Please enter a valid email address.');
     }
 
     if (!isPasswordValid(password)) {
@@ -58,7 +63,7 @@ export default SignUP = (props) => {
     }
   };
 
-  //Password requirements system that checks if the password contains the minimum requirements and 
+  //Password requirements system that checks if the password contains the minimum requirements  
   const getUnmetPasswordRequirements = (password) => {
     const requirements = [];
     if (!/\d/.test(password)) {

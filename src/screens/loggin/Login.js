@@ -13,8 +13,8 @@ import React, {useState} from 'react';
 import firebaseApp from '../../../firebase/firebaseConfig';
 import {firebaseAuth} from '../../../firebase/firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth'
-import {BlockUnblockUser,LoginHistoryRegistry, isAccBlocked,getUserDocIdWithEmail} from '../../utils/authUtils';
-import {isEmailAlreadyRegistered} from '../../utils/validationUtils';
+import {BlockUnblockUser,LoginHistoryRegistry, isAccBlocked,getUserDocIdWithEmail} from '../../utils/dbUtils';
+import {EmailExists} from '../../utils/validationUtils';
 
 
 
@@ -30,8 +30,9 @@ export default function Login(props) {
     
     const loginUser = async() => {                 
         setIsEmailBlank('');
-        setBlockedAccMsg('');         
-        if (await isEmailAlreadyRegistered(email)){            
+        setBlockedAccMsg('');     
+        //Check if the email exists    
+        if (await EmailExists(email)){            
             if(!await isAccBlocked(email)){
                 try {
                     await signInWithEmailAndPassword(firebaseAuth, email, password)

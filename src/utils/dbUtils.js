@@ -1,16 +1,17 @@
 import { Alert} from 'react-native';
 import {useState} from 'react';
-import { isPasswordValid, isEmailAlreadyRegistered } from './validationUtils'; // Adjust the path as needed
+import { isPasswordValid, EmailExists } from './validationUtils'; // Adjust the path as needed
 
 //Firebase
 import { firebase,database } from '../../firebase/firebaseConfig';
 import { collection, addDoc, setDoc, doc,getDocs,getDoc,query, where, Query, CollectionReference, QuerySnapshot, updateDoc } from "firebase/firestore";
-
+const db = firebase.firestore();
 //Device Info
 import * as Device from 'expo-device';
 
 //import admin from 'firebase-admin';
-export async function registerUser(username, surname, email, password, confirmPassword) {
+//Function to register a user
+export async function registerUser(username, surname, email, password, confirmPassword) {  
   if (!isPasswordValid(password)) {
     Alert.alert('Invalid Password', 'The password must contain 1 Uppercase letter, .');
     return;
@@ -21,7 +22,7 @@ export async function registerUser(username, surname, email, password, confirmPa
     return;
   }
 
-  if (await isEmailAlreadyRegistered(email)) {
+  if (await EmailExists(email)) {
     Alert.alert('Email Already Registered', 'Please use a different email address.');
     return;
   }
@@ -49,7 +50,9 @@ export async function registerUser(username, surname, email, password, confirmPa
 
     const docRef2 = doc(database, "roles", "User");
     const docSnap = await getDoc(docRef2);
-    const userRole = await docSnap.get('Role');
+    const userRole = docSnap.ref;
+
+    //const userRole = await docSnap.get('Role');
     
     if (docSnap.exists()) {   
       const userData = {      
@@ -78,11 +81,9 @@ export async function registerUser(username, surname, email, password, confirmPa
   }
 
 }
-
-
 //Function to gather the user authentication ID using the email
 export async function getUserDocIdWithEmail(email) {
-  const db = firebase.firestore();
+  //const db = firebase.firestore();
   try{
     //Query to get the document that has the specific email in the users collection
   const q = query(collection(db, "users"), where("email", "==", email));
@@ -103,9 +104,9 @@ export async function getUserDocIdWithEmail(email) {
 
   }
 }
-
+//Function to check if the account is blocked (returns boolean)
 export async function isAccBlocked(email){
-  const db = firebase.firestore();
+  //const db = firebase.firestore();
   try{
     const userDocId = await getUserDocIdWithEmail(email);
   
@@ -130,26 +131,25 @@ export async function isAccBlocked(email){
   }
   
 }
-
-export async function BlockUnblockUser(email, value){ 
-  const db = firebase.firestore();
+//Function to block or unblock a user
+export async function BlockUnblockUser(email, isBlock){ 
+  //const db = firebase.firestore();
   const userID = await getUserDocIdWithEmail(email);
   try{
     const docRef = doc(db,'users',userID)
     await updateDoc(docRef,{
-      Blocked: value,
+      Blocked: isBlock,
     });
-    console.log(`User updated. Field Blocked: '${value}'`);
+    console.log(`User updated. Field Blocked: '${isBlock}'`);
   }
   catch(error){
 
   }
-
 }
-
-export async function LoginHistoryRegistry(email, isLoggedIn,message) {
+//Function to generate a LogginRegister in the log in history
+export async function LoginHistoryRegistry(email, isLoggedIn,reasonMsg) {
   //create a reference for the firestore
-  const db = firebase.firestore();
+  //const db = firebase.firestore();
   //constant for todays date
   const logginDate = new Date();
 
@@ -165,7 +165,7 @@ export async function LoginHistoryRegistry(email, isLoggedIn,message) {
   
   //If the user login is incorrect we add the reason message
   if (!isLoggedIn) {
-    logginInfo.reason = message;
+    logginInfo.reason = reasonMsg;
   }
   
   try {
@@ -192,4 +192,46 @@ export async function LoginHistoryRegistry(email, isLoggedIn,message) {
     console.log('Failed to create a new login registry');
     console.error(error);
   }  
+}
+
+//Function to modify username and surname of fields from a user
+export async function modifyUser(userID, newUsername,newSurname) {
+  //const db = firebase.firestore();  
+  if (userID){
+    try{
+      const docRef = doc(db,'users',userID)
+      if (username){
+        await updateDoc(docRef,{
+          username: newUsername,
+        })
+      }
+      if (surname){
+        await updateDoc(docRef,{
+          surname: newSurname,
+        })
+      }
+      
+    }catch(error){
+      console.error(error);
+    }
+  }else{
+    console.log(`Document ID: ${userID} doesn't exist.`)
+  }
+}
+
+//Function to reset password via mail
+export async function ResetPassword(userID){
+
+}
+//Function to check user role
+export async function CheckUserRole(userID){
+  try{
+    const docRef = doc(db,'users',userID);
+  }catch(error){}
+}
+
+//Function to delete a user
+export async function DeleteUser(userID) {
+
+
 }

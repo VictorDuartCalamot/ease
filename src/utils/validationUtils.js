@@ -17,8 +17,12 @@ export function isPasswordValid(password) {
 }
 
 //Checks if the email is already registered in the firebase database returns true if exists
-export async function isEmailAlreadyRegistered(email) {
+export async function EmailExists(email) {
   const snapshot = await firebase.firestore().collection('users').where('email', '==', email).get();      
   return !snapshot.empty;  
 }
 
+
+export async function checkAllData(){
+  
+}
