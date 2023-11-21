@@ -1,35 +1,53 @@
-import { Text, StyleSheet, View, Button } from 'react-native';
-import React from 'react';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import * as React from 'react';
+import { Settings, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 
-import SettingsScreen from '../settings/user_settings';
-  
-  const Drawer = createDrawerNavigator();
-
 function HomeScreen() {
-  <view>
-    hola
-  </view>
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Home!</Text>
+    </View>
+  );
 }
 
-export default function Home() {
-    return(
-        <NavigationContainer independent={true}>
-          <Drawer.Navigator initialRouteName='Home'>
-            <Drawer.Screen name="Home" component={HomeScreen} />          
-            <Drawer.Screen name="Settings" component={SettingsScreen} />        
-          </Drawer.Navigator>  
+function SettingsScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Settings!</Text>
+    </View>
+  );
+}
+
+const Tab = createBottomTabNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer independent={true}>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Home') {
+              iconName = focused ? 'ios-information-circle' : 'ios-information-circle-outline';
+            } else if (route.name === 'Settings') {
+              iconName = focused ? 'ios-list-box' : 'ios-list';
+            }
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}
+        tabBarOptions={{
+          activeTintColor: 'tomato',
+          inactiveTintColor: 'gray',
+        }}
+      >
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+      </Tab.Navigator>
     </NavigationContainer>
-    )
+  );
 }
-
-const styles = StyleSheet.create({
-    mainStyle: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#FCFCFC'
-    },
-
-})
