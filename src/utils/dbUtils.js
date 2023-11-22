@@ -1,80 +1,53 @@
 import { Alert} from 'react-native';
 import {useState} from 'react';
 import { isPasswordValid, EmailExists } from './validationUtils'; // Adjust the path as needed
-
 //Firebase
 import { firebase,database } from '../../firebase/firebaseConfig';
 import { collection, addDoc, setDoc, doc,getDocs,getDoc,query, where, Query, CollectionReference, QuerySnapshot, updateDoc } from "firebase/firestore";
+
 const db = firebase.firestore();
 //Device Info
 import * as Device from 'expo-device';
 
-//import admin from 'firebase-admin';
 //Function to register a user
-export async function registerUser(username, surname, email, password, confirmPassword) {  
-  if (!isPasswordValid(password)) {
-    Alert.alert('Invalid Password', 'The password must contain 1 Uppercase letter, .');
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    Alert.alert('Passwords Do Not Match', 'Please make sure your passwords match.');
-    return;
-  }
-
-  if (await EmailExists(email)) {
-    Alert.alert('Email Already Registered', 'Please use a different email address.');
-    return;
-  }
-
-  try {
-    
+export async function registerUser(nif,username, surname, email, password,isBusinessAccount) {  
+  try {    
     //Create user in firebase authentication
     const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
     const user = userCredential.user;
-    
-
-    //Set custom claims for the user role
-    /*
-    await firebase.admin.auth().setCustomUserClaims(user.uid, {role: 'user'});
-
-    // Send email verification
-    await firebase.auth().currentUser.sendEmailVerification({
-      handleCodeInApp: true,
-      url: 'ease-8d84a.firebaseapp.com', // Update with your verification URL
-    });
-
-    database.collection('roles').doc('user').get();
-    Alert.alert('Verification email sent'); */
-    
-
-    const docRef2 = doc(database, "roles", "User");
-    const docSnap = await getDoc(docRef2);
-    const userRole = docSnap.ref;
-
-    //const userRole = await docSnap.get('Role');
-    
-    if (docSnap.exists()) {   
+    //Depending on account type the user will be given a role or other
+    if (isBusinessAccount){
+      roleDocRef = doc(database, "business_role", "accountManager");
+    }else{
+      roleDocRef = doc(database, "role", "user");
+    }
+    //Retrieve the role
+    const docSnap = await getDoc(roleDocRef);
+    const userRole = docSnap.ref; 
       const userData = {      
         username: username,
         surname: surname,
         email: email,
         role: userRole,
-        SignUpDate: new Date(),
-        Blocked: false,
+        signUpDate: new Date(),
+        blocked: false,
+        isBusinessAccount: isBusinessAccount,
+        isPremiumAccount: false,
+
       };
-  
+      if (isBusinessAccount) {
+        userData.nif = nif;
+      }
       //Add document in firestore with the document ID as the user ID
-      const docRef = await setDoc(doc(database, "users", user.uid),userData);
+      try{
+        const docRef = await setDoc(doc(database, "user", user.uid),userData);
+        const emailDocRef = await setDoc(doc(database, "email", email),{});  
+      }catch(e){
+        console.error(e);
+      }
 
-    } else {
-      // docSnap.data() will be undefined in this case
-      console.log("No such document!");
-    }
-
-
-   
-
+      
+         
     // Registration successful
   } catch (error) {
     Alert.alert('Registration Error', error.message);
@@ -104,22 +77,23 @@ export async function getUserDocIdWithEmail(email) {
 
   }
 }
+
 //Function to check if the account is blocked (returns boolean)
 export async function isAccBlocked(email){
   //const db = firebase.firestore();
   try{
     const userDocId = await getUserDocIdWithEmail(email);
   
-  const docRef = doc(db,'users',userDocId);
+  const docRef = doc(db,'user',userDocId);
 
   const documentSnapshot = await getDoc(docRef);
   // Check if the document exists
   if (documentSnapshot.exists()) {
     // Access the specific field
-    const fieldValue = documentSnapshot.get('Blocked');
+    const fieldValue = documentSnapshot.get('blocked');
 
     // Do something with the field value
-    console.log(`Value of field '${"Blocked"}':`, fieldValue);
+    console.log(`Value of field '${"blocked"}':`, fieldValue);
     return fieldValue;
   } else {
     console.log('Document does not exist');
@@ -136,7 +110,7 @@ export async function BlockUnblockUser(email, isBlock){
   //const db = firebase.firestore();
   const userID = await getUserDocIdWithEmail(email);
   try{
-    const docRef = doc(db,'users',userID)
+    const docRef = doc(db,'user',userID)
     await updateDoc(docRef,{
       Blocked: isBlock,
     });
@@ -174,7 +148,7 @@ export async function LoginHistoryRegistry(email, isLoggedIn,reasonMsg) {
     //if returns data
     if (userDocId) {
       //reference to the document id of the user inside users collection
-      const userRef = db.collection('users').doc(userDocId);
+      const userRef = db.collection('user').doc(userDocId);
       //reference of the logginHistory collection using the userRef
       const logginHistoryCollectionRef = userRef.collection('logginHistory');
 
@@ -199,7 +173,7 @@ export async function modifyUser(userID, newUsername,newSurname) {
   //const db = firebase.firestore();  
   if (userID){
     try{
-      const docRef = doc(db,'users',userID)
+      const docRef = doc(db,'user',userID)
       if (username){
         await updateDoc(docRef,{
           username: newUsername,
@@ -226,7 +200,7 @@ export async function ResetPassword(userID){
 //Function to check user role
 export async function CheckUserRole(userID){
   try{
-    const docRef = doc(db,'users',userID);
+    const docRef = doc(db,'user',userID);
   }catch(error){}
 }
 

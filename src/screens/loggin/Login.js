@@ -10,14 +10,13 @@ import {
 import React, {useState} from 'react';
 
 //Firebase auth
-import firebaseApp from '../../../firebase/firebaseConfig';
+//import firebaseApp from '../../../firebase/firebaseConfig';
 import {firebaseAuth} from '../../../firebase/firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth'
-import {BlockUnblockUser,LoginHistoryRegistry, isAccBlocked,getUserDocIdWithEmail} from '../../utils/dbUtils';
+import {BlockUnblockUser,LoginHistoryRegistry, isAccBlocked,getUserDocIdWithEmail,getUserReference} from '../../utils/dbUtils';
 import {EmailExists} from '../../utils/validationUtils';
-
-
-
+import { firebase,database } from '../../../firebase/firebaseConfig';
+db = firebase.firestore();
 export default function Login(props) {
 
     //Create status variable
@@ -31,32 +30,48 @@ export default function Login(props) {
     const loginUser = async() => {                 
         setIsEmailBlank('');
         setBlockedAccMsg('');     
-        //Check if the email exists    
-        if (await EmailExists(email)){            
-            if(!await isAccBlocked(email)){
-                try {
-                    await signInWithEmailAndPassword(firebaseAuth, email, password)
-                    Alert.alert('Sesion Iniciada')
-                    LoginHistoryRegistry(email,true)                                                    
-                } catch (error) {
-                    setIsEmailBlank('Email or password incorrect, please try again.')  
-                    console.log(error);                
-                    LoginHistoryRegistry(email,false,'Incorrect password.')
-                    //Gets the previous state of the BlockAccCounter and increments it +1 
-                    setBlockAccCounter((prevCounter) => prevCounter + 1); 
-                    console.log("Counter: "+blockAccCounter);
-                    if (blockAccCounter >= 3){
-                        BlockUnblockUser(email, true);
-                        setIsEmailBlank('');
-                        setBlockedAccMsg('The account has been blocked, maximum loggin attempts reached.\nPlease contact with an administrator to unblock your account.');                                            
-                    }                                                                                                    
-                }
-            }else{
-                setBlockedAccMsg('Your account is blocked, please contact an administrator to unblock your account');
-            }                        
-        }else{            
-            setIsEmailBlank('Please enter a valid email address')
-        }        
+        //Check if the email exists
+        try{
+            const userDocId = await getUserDocIdWithEmail(email);
+
+            if (userDocId) {
+                const userRef = db.collection('user').doc(userDocId);
+                const userDoc = await userRef.get();
+                //Check if user is blocked
+                if (userDoc.exists && userDoc.data().blocked) {
+                    console.log('Login denied: User is blocked');
+                    // You can add additional logic or display a message to the user here
+                    return;
+                  }
+            }
+        }catch(error){
+            console.log(error);
+          
+        }//8 nov 2023
+        //
+/*
+        if(!await isAccBlocked(email)){
+            try {
+                await signInWithEmailAndPassword(firebaseAuth, email, password)
+                Alert.alert('Sesion Iniciada')
+                LoginHistoryRegistry(email,true)                                                    
+            } catch (error) {
+                setIsEmailBlank('Email or password incorrect, please try again.')  
+                console.log(error);                
+                LoginHistoryRegistry(email,false,'Incorrect password.')
+                //Gets the previous state of the BlockAccCounter and increments it +1 
+                setBlockAccCounter((prevCounter) => prevCounter + 1); 
+                console.log("Counter: "+blockAccCounter);
+                if (blockAccCounter >= 3){
+                    BlockUnblockUser(email, true);
+                    setIsEmailBlank('');
+                    setBlockedAccMsg('The account has been blocked, maximum loggin attempts reached.\nPlease contact with an administrator to unblock your account.');                                            
+                }                                                                                                    
+            }
+        }else{
+            setBlockedAccMsg('Your account is blocked, please contact an administrator to unblock your account');
+        }*/                       
+             
     }
 
     return (
