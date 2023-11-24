@@ -6,7 +6,8 @@ import { getAuth } from "firebase/auth";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-
+import { initializeFirestore, getFirestore } from "firebase/firestore";
+import Constants from "expo-constants";
 //import { getAnalytics } from "firebase/analytics";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -15,13 +16,13 @@ import 'firebase/compat/firestore';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBedVNL8IJBZms2mIa4dlTNpaErpvOqlAg",
-  authDomain: "ease-8d84a.firebaseapp.com",
-  projectId: "ease-8d84a",
-  storageBucket: "ease-8d84a.appspot.com",
-  messagingSenderId: "157901651065",
-  appId: "1:157901651065:web:77df0245d5791bbb75e8a8",
-  measurementId: "G-WXGBF36HH0"
+  apiKey: Constants.expoConfig.extra.apiKey,
+  authDomain: Constants.expoConfig.extra.authDomain,
+  projectId: Constants.expoConfig.extra.projectId,
+  storageBucket: Constants.expoConfig.extra.storageBucket,
+  messagingSenderId: Constants.expoConfig.extra.messagingSenderId,
+  appId: Constants.expoConfig.extra.appId,
+  databaseURL: Constants.expoConfig.extra.databaseURL,
 };
 
 // Initialize Firebase
@@ -31,10 +32,12 @@ if (!firebase.apps.length){
 }
 export {firebase};
 
-export const firebaseApp = initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuth = getAuth(firebaseApp);
-//export const fireStoreDB = getFirestore(firebaseApp);
+export const database = getFirestore(firebaseApp);
+/*export const database = initializeFirestore(firebaseApp, {
+  experimentalForceLongPolling: true,
+});
 
+*/
 
-
-//export default firebaseApp;

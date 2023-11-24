@@ -17,7 +17,6 @@ const Stack = createStackNavigator();
 function App() {
 
   //If the user have been authenticated already, will go to the home screen.
-
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
 
@@ -49,15 +48,16 @@ function App() {
         /> 
       </Stack.Navigator>
     );
-  } return(
-    <Stack.Navigator>   
-    <Stack.Screen name="Home" component={Home}
-        options={{
-          headerShown:false,
-        }}
-        />
-    </Stack.Navigator>   
-  )
+  }else {
+    return(
+      <Stack.Navigator>   
+      <Stack.Screen name="Home" component={Home}
+          options={{
+            headerShown:false,
+          }}
+          />
+      </Stack.Navigator>   
+  )}
 
   
   }

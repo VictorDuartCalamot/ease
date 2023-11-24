@@ -7,34 +7,78 @@ import {
     TouchableOpacity,
     Alert
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 
 //Firebase auth
-import firebaseApp from '../../../firebase/firebaseConfig';
+//import firebaseApp from '../../../firebase/firebaseConfig';
 import {firebaseAuth} from '../../../firebase/firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth'
-
-
-
+import {BlockUnblockUser,LoginHistoryRegistry, isAccBlocked,getUserDocIdWithEmail,getUserReference} from '../../utils/dbUtils';
+import {EmailExists,isValidEmail} from '../../utils/validationUtils';
+import { firebase} from '../../../firebase/firebaseConfig';
+db = firebase.firestore();
 export default function Login(props) {
 
     //Create status variable
-    const [email,setEmail] = useState()
-    const [password,setPassword] = useState()
-    
-    //Ruta para acceder a la pantalla de Home
-    const loginUser = async() => {
-        try {
-            await signInWithEmailAndPassword(firebaseAuth, email, password)
-            Alert.alert('Sesion Iniciada')            
-            props.navigation.navigate('Home')
-        } catch (error) {
-            console.log(error);
-            Alert.alert('El usuario o la contraseña son incorrectos.')            
-                                
-        }
-    }
+    const [lastEmail,setLastEmail] = useState();
+    const [email,setEmail] = useState();
+    const [password,setPassword] = useState();
+    const [isEmailBlank, setIsEmailBlank] = useState();
+    const [blockAccCounter, setBlockAccCounter] = useState(1);
+    const [blockedAccMsg,setBlockedAccMsg] = useState();   
 
+    useEffect(() => {
+        //console.debug('Email changed. Current email:', email, 'Last email:', lastEmail);
+        if (email !== lastEmail) {
+            //console.debug('Email changed. Resetting counter to 1.');
+            setBlockAccCounter(1);
+        }       
+    }, [email, lastEmail, blockAccCounter]);
+    
+    async function loginUser() {            
+        
+        //console.log('Login button clicked!');                  
+        setIsEmailBlank('');
+        setBlockedAccMsg('');         
+        
+        try{
+            if(isValidEmail(email)) {                                                
+                
+                setLastEmail(email);                                                        
+                const isBlocked = await isAccBlocked(email);
+                if (!isBlocked) {                              
+                    try{                        
+                        await signInWithEmailAndPassword(firebaseAuth, email, password)                        
+                        LoginHistoryRegistry(email,true)
+                        Alert.alert('Sesion Iniciada')
+                    }catch(error){                                                
+                        //console.error(error);                        
+                        const realEmail = await EmailExists(email);                        
+                        if (realEmail){
+                            await LoginHistoryRegistry(email,false,'Incorrect password.')
+                            //Gets the previous state of the BlockAccCounter and increments it +1                                                      
+                            if (blockAccCounter >= 3){
+                                await BlockUnblockUser(email, true);                            
+                                setBlockedAccMsg('The account has been blocked, maximum loggin attempts reached.\nPlease contact with an administrator to unblock your account.');                                            
+                                setBlockAccCounter(1);                                
+                            } else{
+                                setIsEmailBlank('Email or password incorrect, please try again.')
+                                setBlockAccCounter((prevCounter) => prevCounter + 1);                                                         
+                            }                            
+                        }else{
+                            setIsEmailBlank('Email or password incorrect, please try again.')
+                        }                                                                                   
+                    }                                    
+                }else{
+                    setBlockedAccMsg('Your account is blocked, please contact an administrator to unblock your account');
+                }   
+            }else{
+                setIsEmailBlank('Email or password incorrect, please try again.')
+            }                         
+        }catch(error){
+            console.log(error);          
+        }               
+    }
     return (
         <View style={styles.main_style}>
 
@@ -62,6 +106,13 @@ export default function Login(props) {
                         onChangeText={(text)=>setPassword(text)}
                         secureTextEntry={true} />
                 </View>
+
+                {isEmailBlank ? (
+                    <Text style={styles.RequirementsMessage}>{isEmailBlank}</Text>
+                ) : null}
+                {blockedAccMsg ? (
+                    <Text style={styles.RequirementsMessage}>{blockedAccMsg}</Text>
+                ) : null}
                 
                 <View style={styles.mainButton}>
                     
@@ -76,9 +127,7 @@ export default function Login(props) {
                     
                      <Text style={styles.signUpTxt}>
                         Don't have an account?                        
-                         <Text style={{color: 'blue'}} onPress={()=>props.navigation.navigate('SignUp')}> Sign Up</Text>
-                         
-
+                         <Text style={{color: 'blue'}} onPress={()=>props.navigation.navigate('SignUp')}> Sign Up</Text>                         
                      </Text>   
                 </View>
                 
@@ -149,6 +198,9 @@ const styles = StyleSheet.create({
         marginTop:20,
         textAlign:'center',
     },
-   
-
+    RequirementsMessage: {
+        marginTop: 10,
+        color: 'red',
+        textAlign: 'center',
+      },   
 });
