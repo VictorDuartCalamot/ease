@@ -15,6 +15,14 @@ export async function registerUser(nif,username, surname, email, password,isBusi
     //Create user in firebase authentication
     const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
     const user = userCredential.user;
+
+    try{
+      emailDocRef = await setDoc(doc(database, "email", email),{blocked:false}); 
+      const emailDocSnap = await getDoc(emailDocRef);
+      blockedFieldRef = field("blocked").ref;      
+    }catch(e){
+
+    }
     //Depending on account type the user will be given a role or other
     if (isBusinessAccount){
       roleDocRef = doc(database, "business_role", "accountManager");
@@ -30,7 +38,7 @@ export async function registerUser(nif,username, surname, email, password,isBusi
         email: email,
         role: userRole,
         signUpDate: new Date(),
-        blocked: false,
+        blocked: blockedFieldRef,
         isBusinessAccount: isBusinessAccount,
         isPremiumAccount: false,
 
@@ -40,8 +48,7 @@ export async function registerUser(nif,username, surname, email, password,isBusi
       }
       //Add document in firestore with the document ID as the user ID
       try{
-        const docRef = await setDoc(doc(database, "user", user.uid),userData);
-        const emailDocRef = await setDoc(doc(database, "email", email),{});  
+        const docRef = await setDoc(doc(database, "user", user.uid),userData);         
       }catch(e){
         console.error(e);
       }
@@ -54,12 +61,12 @@ export async function registerUser(nif,username, surname, email, password,isBusi
   }
 
 }
-//Function to gather the user authentication ID using the email
+//Function to gather the user authentication ID using the email. Needs to be authenticated to user this function
 export async function getUserDocIdWithEmail(email) {
   //const db = firebase.firestore();
   try{
     //Query to get the document that has the specific email in the users collection
-  const q = query(collection(db, "users"), where("email", "==", email));
+  const q = query(collection(db, "user"), where("email", "==", email));
   //execute the query using the function get docs
   const querySnapshot = await getDocs(q);
   
@@ -79,45 +86,37 @@ export async function getUserDocIdWithEmail(email) {
 }
 
 //Function to check if the account is blocked (returns boolean)
-export async function isAccBlocked(email){
-  //const db = firebase.firestore();
-  try{
-    const userDocId = await getUserDocIdWithEmail(email);
-  
-  const docRef = doc(db,'user',userDocId);
+export async function isAccBlocked(email) {
+  try {
+    const docRef = doc(db, 'email', email);
 
-  const documentSnapshot = await getDoc(docRef);
-  // Check if the document exists
-  if (documentSnapshot.exists()) {
-    // Access the specific field
-    const fieldValue = documentSnapshot.get('blocked');
+    const documentSnapshot = await getDoc(docRef);
 
-    // Do something with the field value
-    console.log(`Value of field '${"blocked"}':`, fieldValue);
-    return fieldValue;
-  } else {
-    console.log('Document does not exist');
-    return null; // or handle the case where the document doesn't exist
-  }
-  }catch(error){
-    console.error("Email doesn't exist:", email)
+    // Check if the document exists
+    if (documentSnapshot.exists()) {
+      // Access the specific field
+      const fieldValue = documentSnapshot.data().blocked;
+
+      // Do something with the field value
+      //console.log(`Value of field 'blocked':`, fieldValue);
+      console.log(fieldValue);
+      return fieldValue;
+    } else {
+      console.log('Document does not exist');
+      return null; // or handle the case where the document doesn't exist
+    }
+  } catch (error) {
+    console.error("Error retrieving email data:", error);
     return null;
   }
-  
 }
 //Function to block or unblock a user
-export async function BlockUnblockUser(email, isBlock){ 
-  //const db = firebase.firestore();
-  const userID = await getUserDocIdWithEmail(email);
-  try{
-    const docRef = doc(db,'user',userID)
-    await updateDoc(docRef,{
-      Blocked: isBlock,
-    });
-    console.log(`User updated. Field Blocked: '${isBlock}'`);
-  }
-  catch(error){
-
+export async function BlockUnblockUser(email, block) {
+  try {
+    const userDocRef = doc(database, 'email', email);
+    await updateDoc(userDocRef, { blocked: block });
+  } catch (error) {
+    console.error('Error updating user account status:', error);
   }
 }
 //Function to generate a LogginRegister in the log in history
@@ -129,6 +128,7 @@ export async function LoginHistoryRegistry(email, isLoggedIn,reasonMsg) {
 
   //json of log in information
   const logginInfo = ({
+    email: email,
     successfulLogin: isLoggedIn,
     loginDate: logginDate,
     deviceType: Device.deviceType,
@@ -143,29 +143,10 @@ export async function LoginHistoryRegistry(email, isLoggedIn,reasonMsg) {
   }
   
   try {
-    //retrieve the userID using the email (returs data or null)
-    const userDocId = await getUserDocIdWithEmail(email);
-    //if returns data
-    if (userDocId) {
-      //reference to the document id of the user inside users collection
-      const userRef = db.collection('user').doc(userDocId);
-      //reference of the logginHistory collection using the userRef
-      const logginHistoryCollectionRef = userRef.collection('logginHistory');
-
-      // Convert the date to a string
-      const dateString = logginDate.toISOString();
-
-      // Add a new document to the 'logginHistory' sub-collection with current date as documentID 
-      await logginHistoryCollectionRef.doc(dateString).set(logginInfo);
-
-      console.log('Created new login registry');
-    } else {
-      console.log('No matching user document found for email:', email);
-    }
+    await addDoc(collection(database, 'loginHistory'), logginInfo);
   } catch (error) {
-    console.log('Failed to create a new login registry');
-    console.error(error);
-  }  
+    console.error('Error logging login history:', error);
+  }
 }
 
 //Function to modify username and surname of fields from a user

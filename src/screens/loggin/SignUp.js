@@ -71,6 +71,7 @@ export default SignUP = (props) => {
     setEmailAlreadyRegisteredMessage(''); // Reset the email already registered message
     setPasswordRequirementsMessage(''); // Reset the password requirements message
     setValidPassword('');
+    
     const validationErrors = await validateRegistration();
     if (Object.keys(validationErrors).length > 0){
       console.log('Validation errors:', validationErrors);
