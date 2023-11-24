@@ -7,15 +7,15 @@ import {
     TouchableOpacity,
     Alert
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 
 //Firebase auth
 //import firebaseApp from '../../../firebase/firebaseConfig';
 import {firebaseAuth} from '../../../firebase/firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth'
 import {BlockUnblockUser,LoginHistoryRegistry, isAccBlocked,getUserDocIdWithEmail,getUserReference} from '../../utils/dbUtils';
-import {EmailExists} from '../../utils/validationUtils';
-import { firebase,database } from '../../../firebase/firebaseConfig';
+import {EmailExists,isValidEmail} from '../../utils/validationUtils';
+import { firebase} from '../../../firebase/firebaseConfig';
 db = firebase.firestore();
 export default function Login(props) {
 
@@ -25,76 +25,60 @@ export default function Login(props) {
     const [password,setPassword] = useState();
     const [isEmailBlank, setIsEmailBlank] = useState();
     const [blockAccCounter, setBlockAccCounter] = useState(1);
-    const [blockedAccMsg,setBlockedAccMsg] = useState();    
-    //Ruta para acceder a la pantalla de Home
-    
-    const loginUser = async() => {                    
-        setIsEmailBlank('');
-        setBlockedAccMsg('');     
-        //Check if the email exists
-        console.log(lastEmail+' - '+email)
-        if (lastEmail != email){
+    const [blockedAccMsg,setBlockedAccMsg] = useState();   
+
+    useEffect(() => {
+        //console.debug('Email changed. Current email:', email, 'Last email:', lastEmail);
+        if (email !== lastEmail) {
+            //console.debug('Email changed. Resetting counter to 1.');
             setBlockAccCounter(1);
-        }
+        }       
+    }, [email, lastEmail, blockAccCounter]);
+    
+    async function loginUser() {            
+        
+        //console.log('Login button clicked!');                  
+        setIsEmailBlank('');
+        setBlockedAccMsg('');         
+        
         try{
+            if(isValidEmail(email)) {                                                
                 
-                console.log("antes de entrar");
+                setLastEmail(email);                                                        
                 const isBlocked = await isAccBlocked(email);
-                if (!isBlocked) {
-                    console.log("despues de chequear");            
-                    try{
-                        console.log("entro en el trycatch");
-                        await signInWithEmailAndPassword(firebaseAuth, email, password)
-                        
+                if (!isBlocked) {                              
+                    try{                        
+                        await signInWithEmailAndPassword(firebaseAuth, email, password)                        
                         LoginHistoryRegistry(email,true)
                         Alert.alert('Sesion Iniciada')
                     }catch(error){                                                
-                                                                
-                        LoginHistoryRegistry(email,false,'Incorrect password.')
-                        //Gets the previous state of the BlockAccCounter and increments it +1 
-                        setBlockAccCounter((prevCounter) => prevCounter + 1); 
-                        console.log("Counter: "+blockAccCounter);
-                        if (blockAccCounter >= 3){
-                            await BlockUnblockUser(email, true);                            
-                            setBlockedAccMsg('The account has been blocked, maximum loggin attempts reached.\nPlease contact with an administrator to unblock your account.');                                            
-                        } else{
+                        //console.error(error);                        
+                        const realEmail = await EmailExists(email);                        
+                        if (realEmail){
+                            await LoginHistoryRegistry(email,false,'Incorrect password.')
+                            //Gets the previous state of the BlockAccCounter and increments it +1                                                      
+                            if (blockAccCounter >= 3){
+                                await BlockUnblockUser(email, true);                            
+                                setBlockedAccMsg('The account has been blocked, maximum loggin attempts reached.\nPlease contact with an administrator to unblock your account.');                                            
+                                setBlockAccCounter(1);                                
+                            } else{
+                                setIsEmailBlank('Email or password incorrect, please try again.')
+                                setBlockAccCounter((prevCounter) => prevCounter + 1);                                                         
+                            }                            
+                        }else{
                             setIsEmailBlank('Email or password incorrect, please try again.')
-                        }
+                        }                                                                                   
                     }                                    
                 }else{
                     setBlockedAccMsg('Your account is blocked, please contact an administrator to unblock your account');
-                }
-                            
+                }   
+            }else{
+                setIsEmailBlank('Email or password incorrect, please try again.')
+            }                         
         }catch(error){
-            console.log(error);
-          
-        }   
-        setLastEmail(email);     
-/*
-        if(!await isAccBlocked(email)){
-            try {
-                await signInWithEmailAndPassword(firebaseAuth, email, password)
-                Alert.alert('Sesion Iniciada')
-                LoginHistoryRegistry(email,true)                                                    
-            } catch (error) {
-                setIsEmailBlank('Email or password incorrect, please try again.')  
-                console.log(error);                
-                LoginHistoryRegistry(email,false,'Incorrect password.')
-                //Gets the previous state of the BlockAccCounter and increments it +1 
-                setBlockAccCounter((prevCounter) => prevCounter + 1); 
-                console.log("Counter: "+blockAccCounter);
-                if (blockAccCounter >= 3){
-                    BlockUnblockUser(email, true);
-                    setIsEmailBlank('');
-                    setBlockedAccMsg('The account has been blocked, maximum loggin attempts reached.\nPlease contact with an administrator to unblock your account.');                                            
-                }                                                                                                    
-            }
-        }else{
-            setBlockedAccMsg('Your account is blocked, please contact an administrator to unblock your account');
-        }*/                       
-             
+            console.log(error);          
+        }               
     }
-
     return (
         <View style={styles.main_style}>
 

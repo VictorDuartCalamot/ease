@@ -99,7 +99,7 @@ export async function isAccBlocked(email) {
 
       // Do something with the field value
       //console.log(`Value of field 'blocked':`, fieldValue);
-      console.log(fieldValue);
+      //console.log(fieldValue);
       return fieldValue;
     } else {
       console.log('Document does not exist');
