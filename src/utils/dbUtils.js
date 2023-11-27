@@ -15,13 +15,12 @@ export async function registerUser(nif,username, surname, email, password,isBusi
     //Create user in firebase authentication
     const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
     const user = userCredential.user;
-
+    //Create a document with the email as documentId and with the blocked field in it as false by default
     try{
       emailDocRef = await setDoc(doc(database, "email", email),{blocked:false}); 
       const emailDocSnap = await getDoc(emailDocRef);
       blockedFieldRef = field("blocked").ref;      
     }catch(e){
-
     }
     //Depending on account type the user will be given a role or other
     if (isBusinessAccount){
@@ -31,39 +30,36 @@ export async function registerUser(nif,username, surname, email, password,isBusi
     }
     //Retrieve the role
     const docSnap = await getDoc(roleDocRef);
-    const userRole = docSnap.ref; 
-      const userData = {      
-        username: username,
-        surname: surname,
-        email: email,
-        role: userRole,
-        signUpDate: new Date(),
-        blocked: blockedFieldRef,
-        isBusinessAccount: isBusinessAccount,
-        isPremiumAccount: false,
+    const userRole = docSnap.ref;
+    // Create the json
+    const userData = {      
+      username: username,
+      surname: surname,
+      email: email,
+      role: userRole,
+      signUpDate: new Date(),
+      blocked: blockedFieldRef,
+      isBusinessAccount: isBusinessAccount,
+      isPremiumAccount: false,
 
-      };
-      if (isBusinessAccount) {
-        userData.nif = nif;
-      }
-      //Add document in firestore with the document ID as the user ID
-      try{
-        const docRef = await setDoc(doc(database, "user", user.uid),userData);         
-      }catch(e){
-        console.error(e);
-      }
-
-      
-         
+    };
+    //Add field to the json in case its a business account
+    if (isBusinessAccount) {
+      userData.nif = nif;
+    }
+    //Add document in firestore with the document ID as the user ID in the user collection
+    try{
+      const docRef = await setDoc(doc(database, "user", user.uid),userData);         
+    }catch(e){
+      console.error(e);
+    }             
     // Registration successful
   } catch (error) {
     Alert.alert('Registration Error', error.message);
   }
-
 }
 //Function to gather the user authentication ID using the email. Needs to be authenticated to user this function
 export async function getUserDocIdWithEmail(email) {
-  //const db = firebase.firestore();
   try{
     //Query to get the document that has the specific email in the users collection
   const q = query(collection(db, "user"), where("email", "==", email));
@@ -84,7 +80,6 @@ export async function getUserDocIdWithEmail(email) {
 
   }
 }
-
 //Function to check if the account is blocked (returns boolean)
 export async function isAccBlocked(email) {
   try {
@@ -112,6 +107,7 @@ export async function isAccBlocked(email) {
 }
 //Function to block or unblock a user
 export async function BlockUnblockUser(email, block) {
+  //It changes the blocked field to true or false depending block parameter
   try {
     const userDocRef = doc(database, 'email', email);
     await updateDoc(userDocRef, { blocked: block });
@@ -121,8 +117,6 @@ export async function BlockUnblockUser(email, block) {
 }
 //Function to generate a LogginRegister in the log in history
 export async function LoginHistoryRegistry(email, isLoggedIn,reasonMsg) {
-  //create a reference for the firestore
-  //const db = firebase.firestore();
   //constant for todays date
   const logginDate = new Date();
 
@@ -137,11 +131,11 @@ export async function LoginHistoryRegistry(email, isLoggedIn,reasonMsg) {
     isRealDevice: Device.isDevice,    
   });
   
-  //If the user login is incorrect we add the reason message
+  //If the user login is incorrect we add the reason
   if (!isLoggedIn) {
     logginInfo.reason = reasonMsg;
   }
-  
+  //Create document with with the logginInfo fields in it 
   try {
     await addDoc(collection(database, 'loginHistory'), logginInfo);
   } catch (error) {

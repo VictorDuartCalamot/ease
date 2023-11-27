@@ -21,10 +21,10 @@ export default SignUP = (props) => {
   const [isValidPassword,setValidPassword]=useState('');
   const [selectedAccountType, setSelectedAccountType] = useState(false);
   const [nif, setNif] = useState('');
-
+    //Function to validate all fields of the registration and if failed shows the error message at the bottom of the screen.
    async function validateRegistration() {
     const errors = {};
-
+    //Checks account type (business account or not) and if the nif is valid
     if (selectedAccountType && !isValidNIF(nif)) {
         errors.nif = 'NIF is required for Business Account';
         setNifRequiredMessage('NIF is required for Business Account');      
@@ -39,30 +39,32 @@ export default SignUP = (props) => {
       errors.surname = 'Surname is required';
       setSurnameRequiredMessage('Surname is required');
     }
-    
+    //Checks if the email is not valid
     if (!isValidEmail(email)) {
       errors.email = 'Please enter a valid email address.';
       setValidEmail('Please enter a valid email address.');
-    }else{
+    }else{ 
+      //if its valid then checks if it exist
       if (await EmailExists(email)){
         errors.email = 'Email already exists.';
         setValidEmail('Email already exists.');
       }
     }
     
-  
+    //Checks if password is valid
     if (!isPasswordValid(password)) {
       const requirements = getUnmetPasswordRequirements(password);
       errors.password = `Password requirements: ${requirements.join(', ')}`;
       setPasswordRequirementsMessage(`Password requirements: ${requirements.join(', ')}`);
     }
-  
+    //Checks if the confirmPassword equals to the first password introduced 
     if (password !== confirmPassword) {
       errors.confirmPassword = 'Passwords do not match. Please make sure your passwords match.';
       setValidPassword('Passwords do not match. Please make sure your passwords match.');
     }
     return errors;
   };
+  //Function to handle the register 
   const handleRegister = async () => { 
     setValidEmail('');
     setNifRequiredMessage('');
@@ -86,9 +88,7 @@ export default SignUP = (props) => {
       } catch (error) {
         Alert.alert('Registration Error', error.message);
       }
-    }
-    
-    
+    }      
   };
 
   //Password requirements system that checks if the password contains the minimum requirements  
