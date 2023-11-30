@@ -9,8 +9,10 @@ import { firebase } from './firebase/firebaseConfig';
 
 //Routes
 import Home from './src/screens/Home';
+import ResetPassword from './src/screens/ResetPassword';
 import Login from './src/screens/loggin/Login';
 import SignUp from './src/screens/loggin/SignUp';
+import TestScreen from './src/screens/testscreen';
 
 const Stack = createStackNavigator();
 
@@ -46,16 +48,19 @@ function App() {
           headerShown:false,
         }}
         /> 
+        <Stack.Screen name="ResetPassword" component={ResetPassword}
+          options={{
+          headerShown:false,
+        }}
+        /> 
+
       </Stack.Navigator>
     );
   }else {
     return(
       <Stack.Navigator>   
-      <Stack.Screen name="Home" component={Home}
-          options={{
-            headerShown:false,
-          }}
-          />
+        <Stack.Screen name="Home" component={Home} options={{headerShown:false,}}/>
+        <Stack.Screen name="TestScreen" component={TestScreen} options={{headerShown:false,}}/>
       </Stack.Navigator>   
   )}
 

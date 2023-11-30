@@ -4,7 +4,7 @@ import { isPasswordValid, EmailExists } from './validationUtils'; // Adjust the 
 //Firebase
 import { firebase,database } from '../../firebase/firebaseConfig';
 import { collection, addDoc, setDoc, doc,getDocs,getDoc,query, where, Query, CollectionReference, QuerySnapshot, updateDoc } from "firebase/firestore";
-
+import { sendEmailVerification,getAuth,sendPasswordResetEmail } from 'firebase/auth';
 const db = firebase.firestore();
 //Device Info
 import * as Device from 'expo-device';
@@ -17,26 +17,34 @@ export async function registerUser(nif,username, surname, email, password,isBusi
     const user = userCredential.user;
     //Create a document with the email as documentId and with the blocked field in it as false by default
     try{
-      emailDocRef = await setDoc(doc(database, "email", email),{blocked:false}); 
-      const emailDocSnap = await getDoc(emailDocRef);
-      blockedFieldRef = field("blocked").ref;      
+      const emailDocRef = doc(database, "email", email);
+      await setDoc(emailDocRef, { blocked: false });
+      
     }catch(e){
+      console.error(e);
     }
+
     //Depending on account type the user will be given a role or other
-    if (isBusinessAccount){
-      roleDocRef = doc(database, "business_role", "accountManager");
-    }else{
-      roleDocRef = doc(database, "role", "user");
+    if (isBusinessAccount) {
+      const businessRoleDocRef = doc(database, "business_role", "accountManager");
+      const businessRoleDocSnap = await getDoc(businessRoleDocRef);
+      roleName = businessRoleDocSnap.get("roleName");
+    } else {
+      const roleDocRef = doc(database, "role", "user");
+      const roleDocSnap = await getDoc(roleDocRef);
+      roleName = roleDocSnap.get("roleName");
     }
-    //Retrieve the role
-    const docSnap = await getDoc(roleDocRef);
-    const userRole = docSnap.ref;
+    //Blocked reference field
+    const emailDocRef = doc(database, "email", email);
+    const emailDocSnap = await getDoc(emailDocRef);
+    const blockedFieldRef = emailDocSnap.get("blocked")    
+
     // Create the json
     const userData = {      
       username: username,
       surname: surname,
       email: email,
-      role: userRole,
+      role: roleName,
       signUpDate: new Date(),
       blocked: blockedFieldRef,
       isBusinessAccount: isBusinessAccount,
@@ -52,8 +60,15 @@ export async function registerUser(nif,username, surname, email, password,isBusi
       const docRef = await setDoc(doc(database, "user", user.uid),userData);         
     }catch(e){
       console.error(e);
-    }             
-    // Registration successful
+    }         
+    
+    /*const auth = getAuth();
+    sendEmailVerification(auth.currentUser).then(() => {
+    // Email verification sent!
+    // ...
+    Alert.alert('Email verification sent');
+    });
+    */    
   } catch (error) {
     Alert.alert('Registration Error', error.message);
   }
@@ -169,7 +184,17 @@ export async function modifyUser(userID, newUsername,newSurname) {
 }
 
 //Function to reset password via mail
-export async function ResetPassword(userID){
+export async function ResetPassword(email){
+  const auth = getAuth();
+  sendPasswordResetEmail(auth, email).then(() => {
+    // Password reset email sent!
+    // ..
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // ..
+  });
 
 }
 //Function to check user role

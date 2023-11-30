@@ -21,6 +21,7 @@ export default SignUP = (props) => {
   const [isValidPassword,setValidPassword]=useState('');
   const [selectedAccountType, setSelectedAccountType] = useState(false);
   const [nif, setNif] = useState('');
+  
     //Function to validate all fields of the registration and if failed shows the error message at the bottom of the screen.
    async function validateRegistration() {
     const errors = {};
@@ -113,43 +114,25 @@ export default SignUP = (props) => {
   };
 
   return (
-    <ScrollView>
-    <View style={styles.main_style}>
+    <ScrollView style={styles.backgroundColorStyle}>
+    <View style={styles.main_style}>      
       <Image source={require('../../../assets/logo.png')} style={styles.logo} />
-      <View style={styles.login_box}>
-        
+      <View style={styles.login_box}>              
         {/* Extra field for NIF, conditionally rendered based on the selected account type */}
         {selectedAccountType === true && (
           <View style={styles.textBox}>
-          <TextInput
-            style={{paddingHorizontal: 15}}
-            placeholder="NIF"
-            onChangeText={(text) => setNif(text)}
-          />
+          <TextInput style={{paddingHorizontal: 15}} placeholder="NIF" onChangeText={(text) => setNif(text)}/>
           </View>
         )}
         <View style={styles.textBox}>
-          <TextInput
-            placeholder="Username"
-            style={{ paddingHorizontal: 15 }}
-            onChangeText={(text) => setUserName(text)}
-          />
+          <TextInput placeholder="Username" style={{ paddingHorizontal: 15 }} onChangeText={(text) => setUserName(text)}/>
         </View>
         <View style={styles.textBox}>
-          <TextInput
-            placeholder="Surname"
-            style={{ paddingHorizontal: 15 }}
-            onChangeText={(text) => setSurname(text)}
-          />
+          <TextInput placeholder="Surname" style={{ paddingHorizontal: 15 }} onChangeText={(text) => setSurname(text)}/>
         </View>        
         <View style={styles.textBox}>
-          <TextInput
-            placeholder="Email@gmail.com"
-            style={{ paddingHorizontal: 15 }}
-            onChangeText={(text) => setEmail(text)}
-          />
-        </View>
-        
+          <TextInput placeholder="Email@gmail.com" style={{ paddingHorizontal: 15 }} onChangeText={(text) => setEmail(text)}/>
+        </View>                
         <View style={styles.textBox}>
           <TextInput
             placeholder="Password"
@@ -169,20 +152,11 @@ export default SignUP = (props) => {
             secureTextEntry={true}
           />
         </View>
-        <Picker
-          selectedValue={selectedAccountType}
-          onValueChange={(itemValue) => setSelectedAccountType(itemValue)}
-          style={styles.textBox}
-        >
+        <Picker selectedValue={selectedAccountType} onValueChange={(itemValue) => setSelectedAccountType(itemValue)} style={styles.textBox}>
           <Picker.Item label="Normal Account" value={false} />
           <Picker.Item label="Business Account" value={true} />
         </Picker>
 
-        <View style={styles.mainButton}>
-          <TouchableOpacity style={styles.button_box} onPress={handleRegister}>
-            <Text style={styles.textButton}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
         {isNifBlank ? (
           <Text style={styles.RequirementsMessage}>{isNifBlank}</Text>
         ) : null}
@@ -204,9 +178,20 @@ export default SignUP = (props) => {
         {isValidPassword ? (
           <Text style={styles.RequirementsMessage}>{isValidPassword}</Text>
         ) : null}
-        
-      </View>
+
+        <View style={styles.mainButton}>
+          <TouchableOpacity style={styles.button_box} onPress={handleRegister}>
+            <Text style={styles.textButton}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+        <View>                
+          <Text style={styles.signUpTxt}>
+            Already have an account?
+            <Text style={{color: 'blue'}} onPress={()=>props.navigation.popToTop()}> Login here</Text>                         
+          </Text>         
+        </View>
     </View>
+    </View>    
     </ScrollView>
   );
 };
@@ -214,17 +199,19 @@ export default SignUP = (props) => {
 
 
 const styles = StyleSheet.create({
+  backgroundColorStyle:{
+    backgroundColor: '#F7F9F9', 
+  },
   main_style: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FCFCFC',
+    alignItems: 'center',    
   },
   logo: {
     width: 100,
     height: 100,
     marginBottom: '5%',
-    marginTop: '10%',
+    marginTop: '15%',
     borderRadius: 50,
     borderColor: 'black',
     shadowColor: '#000',
