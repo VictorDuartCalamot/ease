@@ -21,10 +21,11 @@ export default SignUP = (props) => {
   const [isValidPassword,setValidPassword]=useState('');
   const [selectedAccountType, setSelectedAccountType] = useState(false);
   const [nif, setNif] = useState('');
-
+  
+    //Function to validate all fields of the registration and if failed shows the error message at the bottom of the screen.
    async function validateRegistration() {
     const errors = {};
-
+    //Checks account type (business account or not) and if the nif is valid
     if (selectedAccountType && !isValidNIF(nif)) {
         errors.nif = 'NIF is required for Business Account';
         setNifRequiredMessage('NIF is required for Business Account');      
@@ -39,37 +40,40 @@ export default SignUP = (props) => {
       errors.surname = 'Surname is required';
       setSurnameRequiredMessage('Surname is required');
     }
-    
+    //Checks if the email is not valid
     if (!isValidEmail(email)) {
       errors.email = 'Please enter a valid email address.';
       setValidEmail('Please enter a valid email address.');
-    }else{
+    }else{ 
+      //if its valid then checks if it exist
       if (await EmailExists(email)){
         errors.email = 'Email already exists.';
         setValidEmail('Email already exists.');
       }
     }
     
-  
+    //Checks if password is valid
     if (!isPasswordValid(password)) {
       const requirements = getUnmetPasswordRequirements(password);
       errors.password = `Password requirements: ${requirements.join(', ')}`;
       setPasswordRequirementsMessage(`Password requirements: ${requirements.join(', ')}`);
     }
-  
+    //Checks if the confirmPassword equals to the first password introduced 
     if (password !== confirmPassword) {
       errors.confirmPassword = 'Passwords do not match. Please make sure your passwords match.';
       setValidPassword('Passwords do not match. Please make sure your passwords match.');
     }
     return errors;
   };
+  //Function to handle the register 
   const handleRegister = async () => { 
+    //Reset variables
     setValidEmail('');
     setNifRequiredMessage('');
-    setUserNameRequiredMessage(''); // Reset the username required message
+    setUserNameRequiredMessage('');
     setSurnameRequiredMessage('');
-    setEmailAlreadyRegisteredMessage(''); // Reset the email already registered message
-    setPasswordRequirementsMessage(''); // Reset the password requirements message
+    setEmailAlreadyRegisteredMessage('');
+    setPasswordRequirementsMessage('');
     setValidPassword('');
     
     const validationErrors = await validateRegistration();
@@ -86,9 +90,7 @@ export default SignUP = (props) => {
       } catch (error) {
         Alert.alert('Registration Error', error.message);
       }
-    }
-    
-    
+    }      
   };
 
   //Password requirements system that checks if the password contains the minimum requirements  
@@ -113,43 +115,25 @@ export default SignUP = (props) => {
   };
 
   return (
-    <ScrollView>
-    <View style={styles.main_style}>
+    <ScrollView style={styles.backgroundColorStyle}>
+    <View style={styles.main_style}>      
       <Image source={require('../../../assets/logo.png')} style={styles.logo} />
-      <View style={styles.login_box}>
-        
+      <View style={styles.login_box}>              
         {/* Extra field for NIF, conditionally rendered based on the selected account type */}
         {selectedAccountType === true && (
           <View style={styles.textBox}>
-          <TextInput
-            style={{paddingHorizontal: 15}}
-            placeholder="NIF"
-            onChangeText={(text) => setNif(text)}
-          />
+          <TextInput style={{paddingHorizontal: 15}} placeholder="NIF" onChangeText={(text) => setNif(text)}/>
           </View>
         )}
         <View style={styles.textBox}>
-          <TextInput
-            placeholder="Username"
-            style={{ paddingHorizontal: 15 }}
-            onChangeText={(text) => setUserName(text)}
-          />
+          <TextInput placeholder="Username" style={{ paddingHorizontal: 15 }} onChangeText={(text) => setUserName(text)}/>
         </View>
         <View style={styles.textBox}>
-          <TextInput
-            placeholder="Surname"
-            style={{ paddingHorizontal: 15 }}
-            onChangeText={(text) => setSurname(text)}
-          />
+          <TextInput placeholder="Surname" style={{ paddingHorizontal: 15 }} onChangeText={(text) => setSurname(text)}/>
         </View>        
         <View style={styles.textBox}>
-          <TextInput
-            placeholder="Email@gmail.com"
-            style={{ paddingHorizontal: 15 }}
-            onChangeText={(text) => setEmail(text)}
-          />
-        </View>
-        
+          <TextInput placeholder="Email@gmail.com" style={{ paddingHorizontal: 15 }} onChangeText={(text) => setEmail(text)}/>
+        </View>                
         <View style={styles.textBox}>
           <TextInput
             placeholder="Password"
@@ -169,20 +153,11 @@ export default SignUP = (props) => {
             secureTextEntry={true}
           />
         </View>
-        <Picker
-          selectedValue={selectedAccountType}
-          onValueChange={(itemValue) => setSelectedAccountType(itemValue)}
-          style={styles.textBox}
-        >
+        <Picker selectedValue={selectedAccountType} onValueChange={(itemValue) => setSelectedAccountType(itemValue)} style={styles.textBox}>
           <Picker.Item label="Normal Account" value={false} />
           <Picker.Item label="Business Account" value={true} />
         </Picker>
 
-        <View style={styles.mainButton}>
-          <TouchableOpacity style={styles.button_box} onPress={handleRegister}>
-            <Text style={styles.textButton}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
         {isNifBlank ? (
           <Text style={styles.RequirementsMessage}>{isNifBlank}</Text>
         ) : null}
@@ -204,9 +179,20 @@ export default SignUP = (props) => {
         {isValidPassword ? (
           <Text style={styles.RequirementsMessage}>{isValidPassword}</Text>
         ) : null}
-        
-      </View>
+
+        <View style={styles.mainButton}>
+          <TouchableOpacity style={styles.button_box} onPress={handleRegister}>
+            <Text style={styles.textButton}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+        <View>                
+          <Text style={styles.signUpTxt}>
+            Already have an account?
+            <Text style={{color: 'blue'}} onPress={()=>props.navigation.popToTop()}> Login here</Text>                         
+          </Text>         
+        </View>
     </View>
+    </View>    
     </ScrollView>
   );
 };
@@ -214,17 +200,19 @@ export default SignUP = (props) => {
 
 
 const styles = StyleSheet.create({
+  backgroundColorStyle:{
+    backgroundColor: '#F7F9F9', 
+  },
   main_style: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FCFCFC',
+    alignItems: 'center',    
   },
   logo: {
     width: 100,
     height: 100,
     marginBottom: '5%',
-    marginTop: '10%',
+    marginTop: '15%',
     borderRadius: 50,
     borderColor: 'black',
     shadowColor: '#000',

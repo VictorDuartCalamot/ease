@@ -12,7 +12,8 @@ import React, {useState,useEffect} from 'react';
 //Firebase auth
 //import firebaseApp from '../../../firebase/firebaseConfig';
 import {firebaseAuth} from '../../../firebase/firebaseConfig';
-import {signInWithEmailAndPassword} from 'firebase/auth'
+import {signInWithEmailAndPassword} from 'firebase/auth';
+import { ResetPassword } from '../../utils/dbUtils';
 import {BlockUnblockUser,LoginHistoryRegistry, isAccBlocked,getUserDocIdWithEmail,getUserReference} from '../../utils/dbUtils';
 import {EmailExists,isValidEmail} from '../../utils/validationUtils';
 import { firebase} from '../../../firebase/firebaseConfig';
@@ -35,15 +36,12 @@ export default function Login(props) {
         }       
     }, [email, lastEmail, blockAccCounter]);
     
-    async function loginUser() {            
-        
+    async function loginUser() {                    
         //console.log('Login button clicked!');                  
         setIsEmailBlank('');
-        setBlockedAccMsg('');         
-        
+        setBlockedAccMsg('');                 
         try{
-            if(isValidEmail(email)) {                                                
-                
+            if(isValidEmail(email)) {                                                                
                 setLastEmail(email);                                                        
                 const isBlocked = await isAccBlocked(email);
                 if (!isBlocked) {                              
@@ -95,8 +93,8 @@ export default function Login(props) {
                     }}  
                     onChangeText={(text)=>setEmail(text)} />
 
-                </View>
-
+                </View> 
+                
                 <View style={styles.textBox}>
                     <TextInput
                         placeholder='Password'
@@ -106,6 +104,7 @@ export default function Login(props) {
                         onChangeText={(text)=>setPassword(text)}
                         secureTextEntry={true} />
                 </View>
+                                                                              
 
                 {isEmailBlank ? (
                     <Text style={styles.RequirementsMessage}>{isEmailBlank}</Text>
@@ -128,8 +127,14 @@ export default function Login(props) {
                      <Text style={styles.signUpTxt}>
                         Don't have an account?                        
                          <Text style={{color: 'blue'}} onPress={()=>props.navigation.navigate('SignUp')}> Sign Up</Text>                         
-                     </Text>   
+                     </Text>                       
                 </View>
+                <View>
+                <Text style={styles.signUpTxt}>
+                        Forgot your password?                        
+                         <Text style={{color: 'blue'}} onPress={() => props.navigation.navigate("ResetPassword")}> Reset it</Text>                         
+                     </Text> 
+                     </View> 
                 
             </View>
 
@@ -142,7 +147,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FCFCFC'
+        //backgroundColor: '#FCFCFC'
+        backgroundColor: '#F7F9F9',
     },
     logo: {
         width: 100,
@@ -195,7 +201,7 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     signUpTxt:{
-        marginTop:20,
+        marginTop:'2%',
         textAlign:'center',
     },
     RequirementsMessage: {

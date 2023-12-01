@@ -20,7 +20,7 @@ export function isPasswordValid(password) {
   );
 }
 
-//Checks if the email is already registered in the firebase database returns true if exists
+//Checks if the email is already registered in the firebase database
 export async function EmailExists(email) {
 const emailDocRef = doc(db, "email", email);
 const docSnapshot = await getDoc(emailDocRef);
@@ -32,15 +32,14 @@ if (docSnapshot.exists()) {
 }
   
 }
-
+//Funcion to check if the email follows a certain pattern
 export function isValidEmail(email) {
   // Use a regular expression to check if the email format is valid
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
-
+//Function to check if the NIF contains exactly 9 digits
 export function isValidNIF(nif){
-  // Check if the NIF is a number and has exactly nine digits
   const nifRegex = /^[0-9]{9}$/;
   return nifRegex.test(nif);
 };
