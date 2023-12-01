@@ -36,12 +36,10 @@ export default function Login(props) {
         }       
     }, [email, lastEmail, blockAccCounter]);
     
-    async function loginUser() {            
-        
+    async function loginUser() {                    
         //console.log('Login button clicked!');                  
         setIsEmailBlank('');
-        setBlockedAccMsg('');         
-        
+        setBlockedAccMsg('');                 
         try{
             if(isValidEmail(email)) {                                                                
                 setLastEmail(email);                                                        

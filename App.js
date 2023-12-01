@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { firebase } from './firebase/firebaseConfig';
+import { isAdmin,isSuperAdmin } from './src/utils/dbUtils';
 
 //Routes
 import Home from './src/screens/Home';
@@ -57,15 +58,19 @@ function App() {
       </Stack.Navigator>
     );
   }else {
-    return(
+    if(isAdmin() || isSuperAdmin()){
+      //Screns del ivan para admin y superadmin
+    }else{
+      return(
       <Stack.Navigator>   
-        <Stack.Screen name="Home" component={Home} options={{headerShown:false,}}/>
-        <Stack.Screen name="TestScreen" component={TestScreen} options={{headerShown:false,}}/>
+      <Stack.Screen name="Home" component={Home} options={{headerShown:false,}}/>
+      <Stack.Screen name="TestScreen" component={TestScreen} options={{headerShown:false,}}/>
       </Stack.Navigator>   
-  )}
-
-  
+      )
+      }
   }
+}
+
   export default () => {
     return (
       <NavigationContainer>

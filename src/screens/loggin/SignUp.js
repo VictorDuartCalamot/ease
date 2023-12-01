@@ -67,12 +67,13 @@ export default SignUP = (props) => {
   };
   //Function to handle the register 
   const handleRegister = async () => { 
+    //Reset variables
     setValidEmail('');
     setNifRequiredMessage('');
-    setUserNameRequiredMessage(''); // Reset the username required message
+    setUserNameRequiredMessage('');
     setSurnameRequiredMessage('');
-    setEmailAlreadyRegisteredMessage(''); // Reset the email already registered message
-    setPasswordRequirementsMessage(''); // Reset the password requirements message
+    setEmailAlreadyRegisteredMessage('');
+    setPasswordRequirementsMessage('');
     setValidPassword('');
     
     const validationErrors = await validateRegistration();
