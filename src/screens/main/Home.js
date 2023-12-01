@@ -1,21 +1,22 @@
 import * as React from 'react';
-import { Settings, Text, View } from 'react-native';
+import { Alert, Settings, Text, View, SafeAreaView} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-
-function HomeScreen() {
+import SettingsScreens from '../settings/user_settings';
+import AdminScreen1   from '../AdminScreen';
+function Profile() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home!</Text>
+      <Text>Profile!</Text>
     </View>
   );
 }
 
-function SettingsScreen() {
+function Home() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings!</Text>
+      <Text>Profile!</Text>
     </View>
   );
 }
@@ -31,10 +32,15 @@ export default function App() {
             let iconName;
 
             if (route.name === 'Home') {
-              iconName = focused ? 'ios-information-circle' : 'ios-information-circle-outline';
+              iconName = focused ? 'home-outline' : 'home-outline';
             } else if (route.name === 'Settings') {
-              iconName = focused ? 'ios-list-box' : 'ios-list';
+              iconName = focused ? 'settings-outline' : 'settings-outline';
+            } else if (route.name === 'Profile') {
+              iconName = focused ? 'person-circle-outline' : 'person-circle-outline';
             }
+              else if (route.name === 'Admin') {
+                iconName = focused ? 'shield-outline' : 'shield-outline';
+           }
 
             // You can return any component that you like here!
             return <Ionicons name={iconName} size={size} color={color} />;
@@ -45,8 +51,11 @@ export default function App() {
           inactiveTintColor: 'gray',
         }}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Admin" component={AdminScreen1} />
+        <Tab.Screen name="Settings" component={SettingsScreens} />
+        <Tab.Screen name="Profile" component={Profile} />
+
       </Tab.Navigator>
     </NavigationContainer>
   );
