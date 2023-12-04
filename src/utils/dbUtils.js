@@ -10,7 +10,7 @@ const db = firebase.firestore();
 import * as Device from 'expo-device';
 
 //Function to register a user
-export async function registerUser(nif,username, surname, email, password,isBusinessAccount) {  
+export async function registerUser(nif,companyName,username, surname, email, password,isBusinessAccount) {  
   try {    
     //Create user in firebase authentication
     const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -54,6 +54,7 @@ export async function registerUser(nif,username, surname, email, password,isBusi
     //Add field to the json in case its a business account
     if (isBusinessAccount) {
       userData.nif = nif;
+      userData.companyName = companyName;
     }
     //Add document in firestore with the document ID as the user ID in the user collection
     try{

@@ -17,10 +17,12 @@ export default SignUP = (props) => {
   const [passwordRequirementsMessage, setPasswordRequirementsMessage] = useState('');
   const [emailAlreadyRegisteredMessage, setEmailAlreadyRegisteredMessage] = useState('');
   const [isNifBlank,setNifRequiredMessage] = useState('');
+  const [companyNameRequiredMessage,setComanyNamRequiredMessage] = useState('');
   const [validEmail,setValidEmail] = useState('');
   const [isValidPassword,setValidPassword]=useState('');
   const [selectedAccountType, setSelectedAccountType] = useState(false);
   const [nif, setNif] = useState('');
+  const [companyName, setCompanyName] = useState('');
   
     //Function to validate all fields of the registration and if failed shows the error message at the bottom of the screen.
    async function validateRegistration() {
@@ -30,7 +32,11 @@ export default SignUP = (props) => {
         errors.nif = 'NIF is required for Business Account';
         setNifRequiredMessage('NIF is required for Business Account');      
     }
-  
+    if (selectedAccountType && !companyName) {
+      errors.companyName = 'Company name is required';
+      setComanyNamRequiredMessage('Company name is required');
+    }
+      
     if (!username) {
       errors.username = 'Username is required';
       setUserNameRequiredMessage('Username is required');
@@ -40,6 +46,9 @@ export default SignUP = (props) => {
       errors.surname = 'Surname is required';
       setSurnameRequiredMessage('Surname is required');
     }
+
+    
+
     //Checks if the email is not valid
     if (!isValidEmail(email)) {
       errors.email = 'Please enter a valid email address.';
@@ -67,21 +76,23 @@ export default SignUP = (props) => {
   };
   //Function to handle the register 
   const handleRegister = async () => { 
-    //Reset variables
+    //Reses all messages
     setValidEmail('');
+    setValidPassword('');
     setNifRequiredMessage('');
-    setUserNameRequiredMessage('');
+    setUserNameRequiredMessage(''); 
     setSurnameRequiredMessage('');
     setEmailAlreadyRegisteredMessage('');
-    setPasswordRequirementsMessage('');
-    setValidPassword('');
+    setPasswordRequirementsMessage(''); 
+    setComanyNamRequiredMessage('');
+    
     
     const validationErrors = await validateRegistration();
     if (Object.keys(validationErrors).length > 0){
       console.log('Validation errors:', validationErrors);
     }else{
       try{
-        await registerUser(nif,username,surname,email,password,selectedAccountType);                
+        await registerUser(nif,companyName,username,surname,email,password,selectedAccountType);                
         const auth = getAuth();
         signOut(auth).then(() => {
         }).catch((error) => {
@@ -121,9 +132,15 @@ export default SignUP = (props) => {
       <View style={styles.login_box}>              
         {/* Extra field for NIF, conditionally rendered based on the selected account type */}
         {selectedAccountType === true && (
-          <View style={styles.textBox}>
-          <TextInput style={{paddingHorizontal: 15}} placeholder="NIF" onChangeText={(text) => setNif(text)}/>
+          <View>
+            <View style={styles.textBox}>
+            <TextInput style={{paddingHorizontal: 15}} placeholder="NIF" onChangeText={(text) => setNif(text)}/>          
+            </View>
+            <View style={styles.textBox}>
+            <TextInput style={{paddingHorizontal: 15}} placeholder="Company Name" onChangeText={(text) => setCompanyName(text)}/>          
+            </View>
           </View>
+          
         )}
         <View style={styles.textBox}>
           <TextInput placeholder="Username" style={{ paddingHorizontal: 15 }} onChangeText={(text) => setUserName(text)}/>
@@ -132,7 +149,7 @@ export default SignUP = (props) => {
           <TextInput placeholder="Surname" style={{ paddingHorizontal: 15 }} onChangeText={(text) => setSurname(text)}/>
         </View>        
         <View style={styles.textBox}>
-          <TextInput placeholder="Email@gmail.com" style={{ paddingHorizontal: 15 }} onChangeText={(text) => setEmail(text)}/>
+          <TextInput placeholder="example@email.com" style={{ paddingHorizontal: 15 }} onChangeText={(text) => setEmail(text)}/>
         </View>                
         <View style={styles.textBox}>
           <TextInput
@@ -160,6 +177,9 @@ export default SignUP = (props) => {
 
         {isNifBlank ? (
           <Text style={styles.RequirementsMessage}>{isNifBlank}</Text>
+        ) : null}
+        {companyNameRequiredMessage ? (
+          <Text style={styles.RequirementsMessage}>{companyNameRequiredMessage}</Text>
         ) : null}
         {isUsernameBlank ? (
           <Text style={styles.RequirementsMessage}>{isUsernameBlank}</Text>
