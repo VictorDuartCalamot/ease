@@ -58,9 +58,9 @@ function App() {
       </Stack.Navigator>
     );
   }else {
-    if(isAdmin() || isSuperAdmin()){
+    //if(isAdmin() || isSuperAdmin()){
       //Screns del ivan para admin y superadmin
-    }else{
+    //}else{
       return(
       <Stack.Navigator>   
       <Stack.Screen name="Home" component={Home} options={{headerShown:false,}}/>
@@ -68,7 +68,7 @@ function App() {
       </Stack.Navigator>   
       )
       }
-  }
+ // }
 }
 
   export default () => {
