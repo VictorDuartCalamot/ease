@@ -40,9 +40,9 @@ export async function registerUser(nif,companyName,username, surname, email, pas
       roleName = roleDocSnap.get("roleName");
     }
     //Blocked reference field
-    const emailDocRef = doc(database, "email", email);
-    const emailDocSnap = await getDoc(emailDocRef);
-    const blockedFieldRef = emailDocSnap.get("blocked")    
+    //const emailDocRef = doc(database, "email", email);
+    //const emailDocSnap = await getDoc(emailDocRef);
+    //const blockedFieldRef = emailDocSnap.get("blocked");    
 
     // Create the json
     const userData = {      
@@ -51,7 +51,7 @@ export async function registerUser(nif,companyName,username, surname, email, pas
       email: email,
       role: roleName,
       signUpDate: new Date(),
-      blocked: blockedFieldRef,
+      //blocked: blockedFieldRef,
       isBusinessAccount: isBusinessAccount,
       isPremiumAccount: false,
 
