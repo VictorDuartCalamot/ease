@@ -9,11 +9,12 @@ import { firebase } from './firebase/firebaseConfig';
 import { isAdmin,isSuperAdmin } from './src/utils/dbUtils';
 
 //Routes
-import Home from './src/screens/main/Home';
+import Home from './src/screens/Home';
 import ResetPassword from './src/screens/ResetPassword';
 import Login from './src/screens/loggin/Login';
 import SignUp from './src/screens/loggin/SignUp';
 import TestScreen from './src/screens/testscreen';
+import AdminScreen from './src/screens/AdminScreen';
 
 const Stack = createStackNavigator();
 
@@ -58,9 +59,16 @@ function App() {
       </Stack.Navigator>
     );
   }else {
-    //if(isAdmin() || isSuperAdmin()){
-      //Screns del ivan para admin y superadmin
-    //}else{
+  }
+    if(isAdmin() || isSuperAdmin()){
+      return(
+        <Stack.Navigator>   
+        <Stack.Screen name="AdminScreen" component={AdminScreen} options={{headerShown:false,}}/>
+        
+        </Stack.Navigator>   
+        )}
+      
+      else{
       return(
       <Stack.Navigator>   
       <Stack.Screen name="Home" component={Home} options={{headerShown:false,}}/>
@@ -68,7 +76,6 @@ function App() {
       </Stack.Navigator>   
       )
       }
- // }
 }
 
   export default () => {
@@ -87,4 +94,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+})
