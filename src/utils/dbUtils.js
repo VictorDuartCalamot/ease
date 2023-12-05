@@ -5,12 +5,17 @@ import { isPasswordValid, EmailExists } from './validationUtils'; // Adjust the 
 import { firebase,database } from '../../firebase/firebaseConfig';
 import { collection, addDoc, setDoc, doc,getDocs,getDoc,query, where, Query, CollectionReference, QuerySnapshot, updateDoc } from "firebase/firestore";
 import { sendEmailVerification,getAuth,sendPasswordResetEmail } from 'firebase/auth';
+
+//const { initializeApp } = require('firebase-admin/app');
+//const admin = initializeApp();
+  
 const db = firebase.firestore();
 //Device Info
 import * as Device from 'expo-device';
 
 //Function to register a user
-export async function registerUser(nif,username, surname, email, password,isBusinessAccount) {  
+export async function registerUser(nif,companyName,username, surname, email, password,isBusinessAccount) {  
+  
   try {    
     //Create user in firebase authentication
     const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -35,9 +40,9 @@ export async function registerUser(nif,username, surname, email, password,isBusi
       roleName = roleDocSnap.get("roleName");
     }
     //Blocked reference field
-    const emailDocRef = doc(database, "email", email);
-    const emailDocSnap = await getDoc(emailDocRef);
-    const blockedFieldRef = emailDocSnap.get("blocked")    
+    //const emailDocRef = doc(database, "email", email);
+    //const emailDocSnap = await getDoc(emailDocRef);
+    //const blockedFieldRef = emailDocSnap.get("blocked");    
 
     // Create the json
     const userData = {      
@@ -46,21 +51,36 @@ export async function registerUser(nif,username, surname, email, password,isBusi
       email: email,
       role: roleName,
       signUpDate: new Date(),
-      blocked: blockedFieldRef,
+      //blocked: blockedFieldRef,
       isBusinessAccount: isBusinessAccount,
       isPremiumAccount: false,
 
     };
     //Add field to the json in case its a business account
-    if (isBusinessAccount) {
-      userData.nif = nif;
+    if (isBusinessAccount) {      
+      userData.companyName = companyName;
+      userData.role = {roleName};
     }
-    //Add document in firestore with the document ID as the user ID in the user collection
+    if (isBusinessAccount) {
+      //First create the company name document like if it was a user
+      try{
+        const companyDocRef = await setDoc(doc(database, "company", companyName),{
+          companyName: companyName,
+          signUpDate: new Date(),
+          isBusinessAccount: isBusinessAccount,
+          nif: nif,
+        });                 
+      }catch(e){
+        console.error(e);
+      }       
+    }
+      //Add document in firestore with the document ID as the user ID in the user collection
     try{
       const docRef = await setDoc(doc(database, "user", user.uid),userData);         
     }catch(e){
       console.error(e);
-    }         
+    } 
+            
     
     /*const auth = getAuth();
     sendEmailVerification(auth.currentUser).then(() => {
