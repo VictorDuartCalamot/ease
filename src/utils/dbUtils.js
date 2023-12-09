@@ -5,7 +5,7 @@ import { isPasswordValid, EmailExists } from './validationUtils'; // Adjust the 
 import { firebase,database } from '../../firebase/firebaseConfig';
 import { collection, addDoc, setDoc, doc,getDocs,getDoc,query, where, Query, CollectionReference, QuerySnapshot, updateDoc } from "firebase/firestore";
 import { sendEmailVerification,getAuth,sendPasswordResetEmail } from 'firebase/auth';
-
+import { deleteUser } from 'firebase/auth';
 //const { initializeApp } = require('firebase-admin/app');
 //const admin = initializeApp();
   
@@ -95,26 +95,30 @@ export async function registerUser(nif,companyName,username, surname, email, pas
 }
 //Function to gather the user authentication ID using the email. Needs to be authenticated to user this function
 export async function getUserDocIdWithEmail(email) {
-  try{
-    //Query to get the document that has the specific email in the users collection
-  const q = query(collection(db, "user"), where("email", "==", email));
-  //execute the query using the function get docs
-  const querySnapshot = await getDocs(q);
-  
-  if (!QuerySnapshot.empty){
-    const userDoc = querySnapshot.docs[0];
-    const userDocId = userDoc.id;    
-    //const documentIdField = userDoc.get('Document ID');
-    return userDocId;
-  }else{
-    console.error('No matching user document found for email:', email);
-  }
-  }catch(error){
+  try {
+    // Query to get the document that has the specific email in the users collection
+    const q = query(collection(db, 'user'), where('email', '==', email));
+    
+    // Execute the query using the function getDocs
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.docs.length > 0) {
+      const userDoc = querySnapshot.docs[0];
+      const userDocId = userDoc.id;
+      
+      console.log('User document ID:', userDocId);
+      return userDocId;
+    } else {
+      console.error('No matching user document found for email:', email);
+      return null;
+    }
+
+  } catch (error) {
     console.error('Error fetching user document ID:', error);
     return null;
-
   }
 }
+
 //Function to check if the account is blocked (returns boolean)
 export async function isAccBlocked(email) {
   try {
@@ -255,49 +259,60 @@ async function deleteLoginHistoryByEmail(email) {
 }
 //Function to check and return the current user role
 async function getUserRoleName(userId) {
+  let userRoleName;
   try {
     // Get the user document by the uuid of the user
-    const userDocRef = doc(database, "user", userId);
-    const userDocSnapshot = await getDoc(userDocRef);
+    const userDocRef = doc(database, 'user', userId);
+    const userDocSnapshot = await getDoc(userDocRef);    
+    if (!userDocSnapshot.exists()) {
+      console.log('User document not found.');
+      return null;
+    }  
+    // Get the role name from the user document
+    userRoleName = userDocSnapshot.data()?.role;     
+    // Check if userRoleName is undefined or not a string
+    if (typeof userRoleName !== 'string') {
+      console.error('Invalid user role:', userRoleName);
+      return null;
+    }  
+    console.log('User role:', userRoleName);
+  } catch (error) {
+    console.error('Error getting user role:', error);
+  }
 
-    if (userDocSnapshot.exists()) {
-      // Get the role name from the user document
-      const userRoleName = userDocSnapshot.data().role;
+    try {
+    // Get the specified role document in the 'role' collection
+    const roleDocRef = doc(database, 'role', userRoleName);
+    const roleDocSnapshot = await getDoc(roleDocRef);
 
-      // Get the specified role document in the 'role' collection
-      const roleDocRef = doc(database, "role", userRoleName);
-      const roleDocSnapshot = await getDoc(roleDocRef);
+    if (!roleDocSnapshot.exists()) {
+      console.log('Role document not found.');
+      return null;
+    }
 
-      if (roleDocSnapshot.exists()) {
-        // Get the roleName field from the role document
-        const roleName = roleDocSnapshot.data().roleName;
+    // Get the roleName field from the role document
+    const roleName = roleDocSnapshot.data().roleName;
 
-        // Compare the roleName fields
-        if (userRoleName === roleName) {
-          console.log("User has the correct role.");
-          return roleName;
-        } else {
-          console.log("User has an incorrect role.");
-          return null;
-        }
-      } else {
-        console.log("Role document not found.");
-        return null;
-      }
+    console.log('Role name:', roleName);
+
+    // Compare the roleName fields
+    if (userRoleName === roleName) {
+      console.log('User has the correct role.');
+      return roleName;
     } else {
-      console.log("User document not found.");
+      console.log('User has an incorrect role.');
       return null;
     }
   } catch (error) {
-    console.error("Error getting user role:", error);
+    console.error('Error checking user role:', error);
     return null;
   }
 }
 
-export async function isAdmin(){
+export async function isAdmin(email){
   let userRole,adminRoleName
   try {
-    userRole = await getUserRoleName(getUserDocIdWithEmail(email));
+    userRole = await getUserRoleName(await getUserDocIdWithEmail(email));
   } catch (error) {
     console.error("RoleNotFound" + error);
   }
@@ -319,15 +334,15 @@ export async function isAdmin(){
   }
 
 }
-export async function isSuperAdmin() {
+export async function isSuperAdmin(email) {
   let userRole,adminRoleName
   try {
-    userRole = await getUserRoleName(getUserDocIdWithEmail(email));
+    userRole = await getUserRoleName(await getUserDocIdWithEmail(email));
   } catch (error) {
     console.error("RoleNotFound" + error);
   }
   try {
-    const adminDocRef = doc(database, "role", "superAdmin");
+    const adminDocRef = doc(database, "role", "superadmin");
     const adminDocSnapshot = await getDoc(adminDocRef);
 
     if (adminDocSnapshot.exists()) {
@@ -345,26 +360,64 @@ export async function isSuperAdmin() {
 
 }
 //Function to delete a user
-export async function DeleteUserBy(email) {
-  //Checks if the user is admin or superAdmin
-  if (isAdmin() || isSuperAdmin()) {
+export async function deleteAllFromUser(email, userId) {
+  const user = getAuth();
+  // Checks if the user is admin or superAdmin
+  if (await isAdmin(user.email) || await isSuperAdmin(user.email)) {
     try {
-      //Deletes the user document from the user colection and the email document of the email collection.
-      await deleteUserByEmail(email);
+      // Show a confirmation dialog
+      Alert.alert(
+        'Confirm Deletion',
+        'Are you sure you want to delete the user?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Delete',
+            onPress: async () => {
+              // User confirmed, proceed with deletion
+              try {
+                // Deletes the user document from the user collection and the email document of the email collection.
+                await deleteUserByEmail(email);
+              } catch (error) {
+                console.error("Error deleting user: " + error.message);
+              }
+
+              try {
+                // Deletes all loginHistory of the user.
+                await deleteLoginHistoryByEmail(email);
+              } catch (error) {
+                console.error("Error deleting user's login history: " + error.message);
+              }
+
+              try {
+                const auth = getAuth();
+                const uidToDelete = userId;
+                // Delete user account
+                await deleteUser(auth, uidToDelete);
+                console.log('User successfully deleted');
+              } catch (error) {
+                console.error("Error deleting user account: " + error.message);
+              }
+
+              // Make sure both functions finish successfully
+              await Promise.all([
+                deleteUserByEmail(email),
+                deleteLoginHistoryByEmail(email),
+                deleteUser(auth, uidToDelete), // Include deleteUser function in Promise.all
+              ]);
+            },
+          },
+        ],
+        { cancelable: true }
+      );
     } catch (error) {
-      console.error("Error deleting user: " + error.message);
-    }  
-    try {
-      //Deletes all loginHistory of the user.
-      await deleteLoginHistoryByEmail(email);
-    } catch (error) {
-      console.error("Error deleting user's login history: " + error.message);
-    } 
-    //Makes sure both functions finish successfully 
-    await Promise.all([deleteUserByEmail(email), deleteLoginHistoryByEmail(email)]);   
-  }else{
+      console.error("Error showing confirmation dialog: " + error.message);
+    }
+  } else {
     console.log("User has not enough permissions to proceed with this operation");
   }
-  
 }
 

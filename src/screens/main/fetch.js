@@ -1,12 +1,17 @@
 import { View, Text, FlatList, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { firebase } from '../config';
+import { firebase } from '../../../firebase/firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
+import { deleteAllFromUser } from '../../utils/dbUtils'
 
 const Fetch = () => {
   const [users, setUsers] = useState([]);
   const TodoRef = firebase.firestore().collection('user');
 
+  async function deleteUser(email,userId){
+    await deleteAllFromUser(email,userId)
+
+  }
   useEffect(() => {
     const unsubscribe = TodoRef.onSnapshot(async (querySnapshot) => {
       const users = [];
@@ -61,7 +66,7 @@ const Fetch = () => {
               <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item.id)}>
                 <Ionicons name="ios-create-outline" size={18} color="#000" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.editButton2} onPress={() => handleEdit(item.id)}>
+              <TouchableOpacity style={styles.editButton2} onPress={() => deleteUser(item.email,item.id) }>
                 <Ionicons name="trash-outline" size={18} color="#000" />
               </TouchableOpacity>
             </View>

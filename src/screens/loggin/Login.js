@@ -39,24 +39,25 @@ export default function Login(props) {
     async function loginUser() {                    
         //console.log('Login button clicked!');                  
         setIsEmailBlank('');
-        setBlockedAccMsg('');                 
+        setBlockedAccMsg(''); 
+        const emailLowerCase = email.toLowerCase();                 
         try{
-            if(isValidEmail(email)) {                                                                
-                setLastEmail(email);                                                        
-                const isBlocked = await isAccBlocked(email);
+            if(isValidEmail(emailLowerCase)) {                                                                
+                setLastEmail(emailLowerCase);                                                        
+                const isBlocked = await isAccBlocked(emailLowerCase);
                 if (!isBlocked) {                              
-                    try{                        
-                        await signInWithEmailAndPassword(firebaseAuth, email, password)                        
-                        LoginHistoryRegistry(email,true)
-                        Alert.alert('Sesion Iniciada')
+                    try{                                               
+                        await signInWithEmailAndPassword(firebaseAuth, emailLowerCase, password)                        
+                        LoginHistoryRegistry(emailLowerCase,true)
+                        Alert.alert('Sesion Iniciada')                        
                     }catch(error){                                                
                         //console.error(error);                        
-                        const realEmail = await EmailExists(email);                        
+                        const realEmail = await EmailExists(emailLowerCase);                        
                         if (realEmail){
-                            await LoginHistoryRegistry(email,false,'Incorrect password.')
+                            await LoginHistoryRegistry(emailLowerCase,false,'Incorrect password.')
                             //Gets the previous state of the BlockAccCounter and increments it +1                                                      
                             if (blockAccCounter >= 3){
-                                await BlockUnblockUser(email, true);                            
+                                await BlockUnblockUser(emailLowerCase, true);                            
                                 setBlockedAccMsg('The account has been blocked, maximum loggin attempts reached.\nPlease contact with an administrator to unblock your account.');                                            
                                 setBlockAccCounter(1);                                
                             } else{

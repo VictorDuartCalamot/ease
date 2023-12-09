@@ -14,7 +14,7 @@ import ResetPassword from './src/screens/ResetPassword';
 import Login from './src/screens/loggin/Login';
 import SignUp from './src/screens/loggin/SignUp';
 import TestScreen from './src/screens/testscreen';
-import AdminScreen from './src/screens/AdminScreen';
+import AdminScreen from './src/screens/main/Home';
 
 const Stack = createStackNavigator();
 
@@ -23,11 +23,21 @@ function App() {
   //If the user have been authenticated already, will go to the home screen.
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
+  const [isAdminValue, setIsAdminValue] = useState(false);
+  const [isSuperAdminValue, setIsSuperAdminValue] = useState(false);
 
   function onAuthStateChanged(user) {
     setUser(user);
     if (initializing) setInitializing(false);
 
+  }
+
+  async function checkAdminStatus(userEmail) {
+    const adminStatus = await isAdmin(userEmail);
+    const superAdminStatus = await isSuperAdmin(userEmail);
+
+    setIsAdminValue(adminStatus);
+    setIsSuperAdminValue(superAdminStatus);
   }
 
   useEffect(() => {
@@ -59,8 +69,10 @@ function App() {
       </Stack.Navigator>
     );
   }else {
-  }
-    if(isAdmin() || isSuperAdmin()){
+  }    
+    
+    checkAdminStatus(user.email)
+    if(isAdminValue || isSuperAdminValue){      
       return(
         <Stack.Navigator>   
         <Stack.Screen name="AdminScreen" component={AdminScreen} options={{headerShown:false,}}/>

@@ -92,7 +92,8 @@ export default SignUP = (props) => {
       console.log('Validation errors:', validationErrors);
     }else{
       try{
-        await registerUser(nif,companyName,username,surname,email,password,selectedAccountType);                
+        const emailLowerCase = email.toLowerCase();                 
+        await registerUser(nif,companyName,username,surname,emailLowerCase,password,selectedAccountType);                
         const auth = getAuth();
         signOut(auth).then(() => {
         }).catch((error) => {
