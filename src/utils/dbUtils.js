@@ -66,8 +66,7 @@ export async function registerUser(nif,companyName,username, surname, email, pas
       try{
         const companyDocRef = await setDoc(doc(database, "company", companyName),{
           companyName: companyName,
-          signUpDate: new Date(),
-          isBusinessAccount: isBusinessAccount,
+          signUpDate: new Date(),          
           nif: nif,
         });                 
       }catch(e){
