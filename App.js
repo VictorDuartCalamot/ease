@@ -9,7 +9,7 @@ import { firebase } from './firebase/firebaseConfig';
 import { isAdmin,isSuperAdmin } from './src/utils/dbUtils';
 
 //Routes
-import Home from './src/screens/Home';
+import Home from './src/screens/UserHomeScreen';
 import ResetPassword from './src/screens/ResetPassword';
 import Login from './src/screens/loggin/Login';
 import SignUp from './src/screens/loggin/SignUp';

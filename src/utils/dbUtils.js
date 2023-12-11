@@ -105,7 +105,7 @@ export async function getUserDocIdWithEmail(email) {
       const userDoc = querySnapshot.docs[0];
       const userDocId = userDoc.id;
       
-      console.log('User document ID:', userDocId);
+      //console.log('User document ID:', userDocId);
       return userDocId;
     } else {
       console.error('No matching user document found for email:', email);
@@ -216,6 +216,7 @@ export async function ResetPassword(email){
   .catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;
+    console.log(errorMessage +" - "+ errorCode);
     // ..
   });
 
@@ -274,7 +275,7 @@ async function getUserRoleName(userId) {
       console.error('Invalid user role:', userRoleName);
       return null;
     }  
-    console.log('User role:', userRoleName);
+    //console.log('User role:', userRoleName);
   } catch (error) {
     console.error('Error getting user role:', error);
   }
@@ -292,11 +293,11 @@ async function getUserRoleName(userId) {
     // Get the roleName field from the role document
     const roleName = roleDocSnapshot.data().roleName;
 
-    console.log('Role name:', roleName);
+    //console.log('Role name:', roleName);
 
     // Compare the roleName fields
     if (userRoleName === roleName) {
-      console.log('User has the correct role.');
+      //console.log('User has the correct role.');
       return roleName;
     } else {
       console.log('User has an incorrect role.');

@@ -4,8 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import firebase from 'firebase/compat/app';
 
 firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      console.log('User email: asdsa', user.uid);
+    if (user) {      
     }
 
     });
