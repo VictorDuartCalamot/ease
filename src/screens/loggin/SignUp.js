@@ -47,8 +47,6 @@ export default SignUP = (props) => {
       setSurnameRequiredMessage('Surname is required');
     }
 
-    
-
     //Checks if the email is not valid
     if (!isValidEmail(email)) {
       errors.email = 'Please enter a valid email address.';
@@ -93,12 +91,12 @@ export default SignUP = (props) => {
     }else{
       try{
         const emailLowerCase = email.toLowerCase();                 
-        await registerUser(nif,companyName,username,surname,emailLowerCase,password,selectedAccountType);                
+        await registerUser(nif,companyName,username,surname,emailLowerCase,password,selectedAccountType);        
         const auth = getAuth();
         signOut(auth).then(() => {
         }).catch((error) => {
           console.error(error);      
-        });
+        });                
       } catch (error) {
         Alert.alert('Registration Error', error.message);
       }

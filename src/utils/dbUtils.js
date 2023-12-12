@@ -14,84 +14,76 @@ const db = firebase.firestore();
 import * as Device from 'expo-device';
 
 //Function to register a user
-export async function registerUser(nif,companyName,username, surname, email, password,isBusinessAccount) {  
-  
-  try {    
-    //Create user in firebase authentication
+export async function registerUser(nif, companyName, username, surname, email, password, isBusinessAccount) {
+  try {
+    // Create user in firebase authentication
     const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
     const user = userCredential.user;
-    //Create a document with the email as documentId and with the blocked field in it as false by default
-    try{
-      const emailDocRef = doc(database, "email", email);
-      await setDoc(emailDocRef, { blocked: false });
-      
-    }catch(e){
-      console.error(e);
-    }
 
-    //Depending on account type the user will be given a role or other
+    // Depending on account type the user will be given a role or other
+    let roleName;
     if (isBusinessAccount) {
-      const businessRoleDocRef = doc(database, "business_role", "accountManager");
-      const businessRoleDocSnap = await getDoc(businessRoleDocRef);
-      roleName = businessRoleDocSnap.get("roleName");
+      try {
+        const businessRoleDocRef = doc(database, "business_role", "accountManager");
+        const businessRoleDocSnap = await getDoc(businessRoleDocRef);
+        roleName = businessRoleDocSnap.get("roleName");
+      } catch (e) {
+        console.error("Error checking the role accountManager " + e);
+      }
     } else {
-      const roleDocRef = doc(database, "role", "user");
-      const roleDocSnap = await getDoc(roleDocRef);
-      roleName = roleDocSnap.get("roleName");
+      try {
+        const roleDocRef = doc(database, "role", "user");
+        const roleDocSnap = await getDoc(roleDocRef);
+        roleName = roleDocSnap.get("roleName");
+      } catch (e) {
+        console.error("Error checking the role user " + e);
+      }
     }
-    //Blocked reference field
-    //const emailDocRef = doc(database, "email", email);
-    //const emailDocSnap = await getDoc(emailDocRef);
-    //const blockedFieldRef = emailDocSnap.get("blocked");    
 
     // Create the json
-    const userData = {      
+    const userData = {
       username: username,
       surname: surname,
       email: email,
       role: roleName,
       signUpDate: new Date(),
-      //blocked: blockedFieldRef,
       isBusinessAccount: isBusinessAccount,
       isPremiumAccount: false,
-
     };
-    //Add field to the json in case its a business account
-    if (isBusinessAccount) {      
-      userData.companyName = companyName;
-      userData.role = {roleName};
-    }
+
+    // Add field to the json in case it's a business account
     if (isBusinessAccount) {
-      //First create the company name document like if it was a user
-      try{
-        const companyDocRef = await setDoc(doc(database, "company", companyName),{
-          companyName: companyName,
-          signUpDate: new Date(),          
-          nif: nif,
-        });                 
-      }catch(e){
-        console.error(e);
-      }       
+      userData.companyName = companyName;
+      userData.role = { roleName };
     }
-      //Add document in firestore with the document ID as the user ID in the user collection
-    try{
-      const docRef = await setDoc(doc(database, "user", user.uid),userData);         
-    }catch(e){
-      console.error(e);
-    } 
-            
+
+    // Create promises for each asynchronous operation
+    const createEmailDocPromise = setDoc(doc(database, "email", email), { blocked: false });
+
+    const createUserDocPromise = setDoc(doc(database, "user", user.uid), userData);
     
-    /*const auth = getAuth();
-    sendEmailVerification(auth.currentUser).then(() => {
-    // Email verification sent!
-    // ...
-    Alert.alert('Email verification sent');
-    });
-    */    
+    const promises = [createEmailDocPromise,createUserDocPromise];
+
+    if (isBusinessAccount) {
+      // First create the company name document like if it was a user
+      const createCompanyDocPromise = setDoc(doc(database, "company", companyName), {
+        companyName: companyName,
+        signUpDate: new Date(),
+        nif: nif,
+      });
+      promises.push(createCompanyDocPromise);
+    }
+
+    // Wait for all promises to complete
+    await Promise.all(promises);
+
+    // Rest of your code...
+
   } catch (error) {
     Alert.alert('Registration Error', error.message);
   }
 }
+
 //Function to gather the user authentication ID using the email. Needs to be authenticated to user this function
 export async function getUserDocIdWithEmail(email) {
   try {

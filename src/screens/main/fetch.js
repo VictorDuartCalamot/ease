@@ -8,7 +8,7 @@ const Fetch = () => {
   const [users, setUsers] = useState([]);
   const TodoRef = firebase.firestore().collection('user');
 
-  async function deleteUser(email,userId){
+  async function deleteUserFunction(email,userId){
     await deleteAllFromUser(email,userId)
 
   }
@@ -66,7 +66,7 @@ const Fetch = () => {
               <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item.id)}>
                 <Ionicons name="ios-create-outline" size={18} color="#000" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.editButton2} onPress={() => deleteUser(item.email,item.id) }>
+              <TouchableOpacity style={styles.editButton2} onPress={() => deleteUserFunction(item.email,item.id) }>
                 <Ionicons name="trash-outline" size={18} color="#000" />
               </TouchableOpacity>
             </View>
