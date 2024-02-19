@@ -4,6 +4,8 @@ import { View, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Settings from './SettingsScreen';
+import Profile from './Profile Screen';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,19 +14,6 @@ const HomeScreen = () => (
     <Text>Home Screen</Text>
   </View>
 );
-
-const ProfileScreen = () => (
-  <View style={styles.container}>
-    <Text>Profile Screen</Text>
-  </View>
-);
-
-const SettingsScreen = () => (
-  <View style={styles.container}>
-    <Text>Settings Screen</Text>
-  </View>
-);
-
 const BottomTab = () => {
   return (
     <NavigationContainer independent={true}>
@@ -49,8 +38,8 @@ const BottomTab = () => {
           inactiveTintColor: 'gray',
         }}>
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Profile" component={ProfileScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
+        <Tab.Screen name="Profile" component={Profile} />
+        <Tab.Screen name="Settings" component={Settings} />
       </Tab.Navigator>
     </NavigationContainer>
   );
