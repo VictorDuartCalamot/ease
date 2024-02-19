@@ -1,10 +1,31 @@
 // LoginScreen.js
 import React, { useState } from 'react';
+import { createStackNavigator  } from '@react-navigation/stack';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import Home from './homescreen';
+
+const Stack = createStackNavigator(); 
+
 
 const LoginScreen = () => {
+  const navigation = useNavigation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  function Home() {
+    return(
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={Home}
+          options={{
+            headerShown:false
+          }}
+          />
+        </Stack.Navigator>
+  
+    );
+        };
+
 
   const handleLogin = () => {
     // Aquí puedes agregar la lógica de autenticación
@@ -37,6 +58,9 @@ const LoginScreen = () => {
             />
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
               <Text style={styles.buttonText}>Iniciar Sesión</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+              <Text style={styles.buttonText}>Home</Text>
             </TouchableOpacity>
           </View>
         </View>
