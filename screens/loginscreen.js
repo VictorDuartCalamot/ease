@@ -1,131 +1,72 @@
-// LoginScreen.js
-import React, { useState } from 'react';
-import { createStackNavigator  } from '@react-navigation/stack';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Home from './homescreen';
-
-const Stack = createStackNavigator(); 
+import { Style, Text, View, StyleSheet,ImageBackground,TextInput,Image} from 'react-native'
+import React from 'react'
+import Mybutton from '../components/Mybutton'
 
 
-const LoginScreen = () => {
-  const navigation = useNavigation();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  function Home() {
-    return(
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={Home}
-          options={{
-            headerShown:false
-          }}
-          />
-        </Stack.Navigator>
-  
-    );
-        };
 
 
-  const handleLogin = () => {
-    // Aquí puedes agregar la lógica de autenticación
-    // Por ahora, simplemente muestra las credenciales en la consola
-    console.log(`Username: ${username}, Password: ${password}`);
-  };
+const LoginScreen = () =>{
+  return(
+    <View style={styles.container}>
+      <ImageBackground source={require("../assets/verde1.jpg")}
+            style={styles.ImageBackground}>
+      <View style={styles.inputContainer}>
+        <Image source={require("../assets/logo.png")}
+          style={styles.ImageLogo}>
+        </Image>
+          <TextInput placeholder="Enter Email or username"/>
+          <View style={styles.border}/>
+          <TextInput placeholder ="Password" secureTextEntry/>
+          <View style={styles.border}/>
+          
+          <Text style={{marginTop:15,color:"blue" }}onPress={() =>navigation.navigate('Register')}
+          >Don't have an account?</Text>
 
-  return (
-    <ImageBackground source={require('../assets/fondo.png')} style={styles.backgroundImage}>
-      <View style={styles.overlay}>
-        <View style={styles.container}>
-            <View>
-              <Image source={require('../assets/logo.png')} style={styles.logo}/>
-            </View>
-          <View style={styles.form}>
-            <TextInput
-              style={styles.input}
-              placeholder="Nombre de usuario"
-              placeholderTextColor="#fff"
-              onChangeText={(text) => setUsername(text)}
-              value={username}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Contraseña"
-              placeholderTextColor="#fff"
-              secureTextEntry
-              onChangeText={(text) => setPassword(text)}
-              value={password}
-            />
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>Iniciar Sesión</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-              <Text style={styles.buttonText}>Home</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+          <Text style={{marginTop:15,color:"blue" }}>Don't remember your password?</Text>
+
+          <Mybutton title={"Iniciar Sesion"}/>
       </View>
-    </ImageBackground>
+      </ImageBackground>
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)', // Añade un fondo oscuro semi-transparente para resaltar el formulario
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#fff',
-  },
-  form: {
-    width: '80%',
-  },
-  input: {
-    height: 40,
-    borderColor: '#fff',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15,
-    paddingLeft: 10,
-    color: '#fff',
-  },
-  button: {
-    backgroundColor: '#4caf50',
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-  },
-logo: {
-    width: 140,
-    height: 140,
-    marginBottom: 50,
-    borderRadius: 50,
-    borderColor: 'black',
-    shadowColor: '#000',
-    shadowOffset: {
-        width: 0,
-        height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowOpacity: 0.25,
-    shadowRadius: 4
-},
-});
-
 export default LoginScreen;
+
+const styles = StyleSheet.create({
+  container:{
+    flex:1
+  },
+  ImageBackground:{
+    height:"100%",
+    paddingHorizontal: 20,
+    alignItems:'center'
+  },
+  inputContainer:{
+    height: 450,
+    width:"100%",
+    backgroundColor:"white",
+    borderRadius:20,
+    justifyContent:"center",
+    marginTop: 170,
+    paddingHorizontal:25,
+
+  },
+  title:{
+    fontSize:40,
+    color:"white"
+  },
+  border:{
+    width:"100%",
+    backgroundColor:"gray",
+    height:1,
+    alignSelf:"center",
+  },
+  ImageLogo:{
+    width:100,
+    height:100,
+    alignSelf:"center",
+    borderRadius:30,
+    marginBottom:20,
+  }
+})
