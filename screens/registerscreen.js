@@ -44,6 +44,8 @@ const registerscreen = () => {
     // You can add axios or any other API call here to register the user
   };
   return(
+
+    
     <View style={styles.container}>
       <ImageBackground source={require("../assets/verde1.jpg")}
             style={styles.ImageBackground}>
