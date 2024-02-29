@@ -3,18 +3,14 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Settings from './SettingsScreen';
 import Profile from './Profile Screen';
 
 const Tab = createBottomTabNavigator();
 
-const HomeScreen = () => (
-  <View style={styles.container}>
-    <Text>Home Screen</Text>
-  </View>
-);
-const BottomTab = () => {
+
+const Home = ({navigation}) => {
   return (
     <NavigationContainer independent={true}>
       <Tab.Navigator
@@ -22,22 +18,21 @@ const BottomTab = () => {
           tabBarIcon: ({ color, size }) => {
             let iconName;
 
-            if (route.name === 'Home') {
-              iconName = 'home';
-            } else if (route.name === 'Profile') {
-              iconName = 'user';
+            if (route.name === 'Profile') {
+              iconName = 'menu';
             } else if (route.name === 'Settings') {
-              iconName = 'cog';
+              iconName = 'home';
             }
 
-            return <FontAwesome name={iconName} size={size} color={color} />;
+            return <Icon name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor:'tomato',
+          tabBarInactiveTintColor:'gray',
+          tabBarStyle:{
+            display:'flex',
           },
         })}
-        tabBarOptions={{
-          activeTintColor: 'tomato',
-          inactiveTintColor: 'gray',
-        }}>
-        <Tab.Screen name="Home" component={HomeScreen} />
+      >
         <Tab.Screen name="Profile" component={Profile} />
         <Tab.Screen name="Settings" component={Settings} />
       </Tab.Navigator>
@@ -53,5 +48,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BottomTab;
+export default Home;
 

@@ -1,11 +1,12 @@
 import { Style, Text, View, StyleSheet,ImageBackground,TextInput,Image} from 'react-native'
 import React from 'react'
 import Mybutton from '../components/Mybutton'
+import Register from './registerscreen';
 
 
 
 
-const LoginScreen = () =>{
+const LoginScreen = ({navigation}) =>{
   return(
     <View style={styles.container}>
       <ImageBackground source={require("../assets/verde1.jpg")}
@@ -19,10 +20,12 @@ const LoginScreen = () =>{
           <TextInput placeholder ="Password" secureTextEntry/>
           <View style={styles.border}/>
           
-          <Text style={{marginTop:15,color:"blue" }}onPress={() =>navigation.navigate('Register')}
+          <Text style={{marginTop:15,color:"blue" }} onPress={() =>navigation.navigate('Register')}
           >Don't have an account?</Text>
 
           <Text style={{marginTop:15,color:"blue" }}>Don't remember your password?</Text>
+          <Text style={{marginTop:15,color:"blue" }} onPress={() =>navigation.navigate('Home')}
+          >Salto de pagina</Text>
 
           <Mybutton title={"Iniciar Sesion"}/>
       </View>
