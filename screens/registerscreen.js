@@ -2,11 +2,34 @@ import { Style, Text, View, StyleSheet,ImageBackground,TextInput,Image} from 're
 import React, {useState} from 'react'
 import Mybutton from '../components/Mybutton'
 
+const getUnmetPasswordRequirements = (password) => {
+  const requirements = [];
+  if (!/\d/.test(password)) {
+    requirements.push('at least one number');
+  }
+  if (!/[A-Z]/.test(password)) {
+    requirements.push('at least one uppercase letter');
+  }
+  if (!/[a-z]/.test(password)) {
+    requirements.push('at least one lowercase letter');
+  }
+  if (!/[$;._\-*]/.test(password)) {
+    requirements.push('at least one of the following symbols: $ ; . _ - *');
+  }
+  if (!/^.{8,}$/.test(password)) {
+    requirements.push('at least 8 characters')
+  }
+  return requirements;
+};
+
+
 const registerscreen = () => {
   const [username, setUsername] = useState('');
   const [LastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
 
   const handleRegister = () => {
     // You can perform any registration logic here, such as calling an API
@@ -15,6 +38,9 @@ const registerscreen = () => {
     console.log('LastName', LastName);
     console.log('Email:', email);
     console.log('Password:', password);
+    console.log('confirm your password:', confirmPassword);
+
+
     // You can add axios or any other API call here to register the user
   };
   return(
@@ -46,11 +72,16 @@ const registerscreen = () => {
           <TextInput placeholder ="Password" 
           secureTextEntry
           value={password}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={(text) => {
+            setPassword(text);
+            setPasswordRequirementsMessage('');
+          }}
           
           />
           <View style={styles.border}/>
-          <TextInput placeholder ="Repite your password" secureTextEntry/>
+          <TextInput placeholder ="confirm your password" 
+          onChangeText={(text) => setConfirmPassword(text)}
+          secureTextEntry={true}/>
           <View style={styles.border}/>
           
           <Mybutton title={handleRegister}/>
