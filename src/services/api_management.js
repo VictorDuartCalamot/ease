@@ -4,38 +4,6 @@ import axios from 'axios';
 
 baseurl = 'https://easeapi.onrender.com/api/'
 
-/*export const createExpense = async (amount,category,date) => {
-    try {
-        const expenseData = {
-          amount: amount,
-          category: category,
-          date: date
-        }
-        console.log(expenseData);
-        // Retrieve the authentication token from AsyncStorage
-        const Token = await AsyncStorage.getItem('Token');
-
-        // Define the API endpoint URL
-        const apiUrl = baseurl+'management/expense/';
-        //console.log(Token)
-        // Set up the request headers with the authentication token
-        const header = {
-            'Authorization': 'Token '+Token,            
-        };
-
-        // Make the POST request to create the expense
-        const response = await axios.post(apiUrl, expenseData, { header });
-
-        // Return the response data
-        return response.data;
-    } catch (error) {
-        // Handle any errors that occur during the request
-        console.error('Error creating expense:', error);
-        throw error;
-    }
-};
-
-*/
 
 export const createExpense = async (expenseData, token) => {
     try {
@@ -46,12 +14,12 @@ export const createExpense = async (expenseData, token) => {
             'Authorization': `Token ${token}`,
             'Content-Type': 'application/json'
         };
-
-        // Make the POST request to create the expense
-        const response = await axios.post(apiUrl, expenseData, { headers });
         console.log(token)
         console.log('--------')
         console.log(expenseData)
+        // Make the POST request to create the expense
+        const response = await axios.post(apiUrl, expenseData, { headers });
+       
         // Return the response data
         console.log(response.data);
         return response.data;
@@ -62,7 +30,7 @@ export const createExpense = async (expenseData, token) => {
     }
 };
 
-export const getExpenses = async (data, token) => {
+export const getExpenses = async (params, token) => {
     try {
         const apiUrl = baseurl+'management/expense/';  // Adjust the URL as per your API endpoint
 
@@ -71,12 +39,12 @@ export const getExpenses = async (data, token) => {
             'Authorization': `Token ${token}`,
             'Content-Type': 'application/json'
         };
-
-        // Make the POST request to create the expense
-        const response = await axios.get(apiUrl,data ,{headers});
         console.log(token)
         console.log('--------')
-        console.log(data)
+        console.log(params)
+        // Make the POST request to create the expense
+        const response = await axios.get(apiUrl,{headers,params});
+        
         // Return the response data
         console.log(response.data);
         return response.data;
@@ -96,12 +64,12 @@ export const deleteExpense = async (id, token) => {
             'Authorization': `Token ${token}`,
             'Content-Type': 'application/json'
         };
-
-        // Make the POST request to create the expense
-        const response = await axios.delete(apiUrl+id, { headers });
         console.log(token)
         console.log('--------')
         console.log(id)
+        // Make the POST request to create the expense
+        const response = await axios.delete(apiUrl+id+'/', { headers });
+        
         // Return the response data
         console.log(response.data);
         return response.data;

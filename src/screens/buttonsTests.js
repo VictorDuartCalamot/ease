@@ -16,15 +16,14 @@ const ButtonsTestsScreen = ({ navigation }) => {
     loginUser('pep@gmail.com','Aa$12345');
   };
   const handleFunction3 = async () => {    
-    const date= new Date();
-    const isoString = date.toISOString();
-    createExpense({ amount: 100.2, category: 'Food', creation_date: '2024-02-17' },await AsyncStorage.getItem('Token'));    
+    const newDate = date.toISOString().substring(0,10).toString();    
+    createExpense({ amount: 100.2, category: 'Food', creation_date: newDate },await AsyncStorage.getItem('Token'));    
   };
   const handleFunction4 = async () => {
-    deleteExpense('d9471148-dda5-4aae-ad75-56c641986e12',await AsyncStorage.getItem('Token'));
+    deleteExpense('15a2af47-91ef-4c04-a998-ee799599d2c4',await AsyncStorage.getItem('Token'));
   };
   const handleFunction5 = async () => {
-    getExpenses({},await AsyncStorage.getItem('Token'));
+    getExpenses({start_date:'2024-02-18',end_date:'2024-02-18'},await AsyncStorage.getItem('Token'));
   };
 
   return (
