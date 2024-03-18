@@ -12,10 +12,11 @@ const storeToken = async (Token) => {
   }
 };
 
-export const registerUser = async (name,email,password) => {
+export const registerUser = async (name,surname,email,password) => {
   try {
     const response = await axios.post(baseurl+'users/register/', {
       name: name,
+      last_name:surname,
       email: email,
       password: password,
     });

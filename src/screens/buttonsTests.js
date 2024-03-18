@@ -2,23 +2,29 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import {registerUser,loginUser} from "../services/api_authentication" // Import your functions
-import { createExpense } from '../services/api_management'
+import { createExpense, deleteExpense, getExpenses } from '../services/api_management'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const ButtonsTestsScreen = ({ navigation }) => {
 
   const handleFunction1 = () => {
     //navigation.navigate('SignUp')
-    registerUser('pepe123o','pepeo123@gmail.com','Aa$12345');
+    registerUser('pep','pepet','pep@gmail.com','Aa$12345');
   };
 
   const handleFunction2 = () => {
-    loginUser('pepeo123@gmail.com','Aa$12345');
+    //loginUser('pepeo123@gmail.com','Aa$12345');
+    loginUser('pep@gmail.com','Aa$12345');
   };
   const handleFunction3 = async () => {    
     const date= new Date();
     const isoString = date.toISOString();
-    createExpense({amount: 127.2, category: 'ocio',date: isoString },await AsyncStorage.getItem('Token'));
-    
+    createExpense({ amount: 100.2, category: 'Food', creation_date: '2024-02-17' },await AsyncStorage.getItem('Token'));    
+  };
+  const handleFunction4 = async () => {
+    deleteExpense('d9471148-dda5-4aae-ad75-56c641986e12',await AsyncStorage.getItem('Token'));
+  };
+  const handleFunction5 = async () => {
+    getExpenses({},await AsyncStorage.getItem('Token'));
   };
 
   return (
@@ -31,6 +37,12 @@ const ButtonsTestsScreen = ({ navigation }) => {
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleFunction3}>
         <Text style={styles.buttonText}>Create expense</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleFunction4}>
+        <Text style={styles.buttonText}>Delete expense</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleFunction5}>
+        <Text style={styles.buttonText}>Get expenses</Text>
       </TouchableOpacity>
       {/* Add more buttons as needed */}
     </View>
