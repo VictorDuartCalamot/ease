@@ -13,7 +13,7 @@ const ButtonsTestsScreen = ({ navigation }) => {
 
   const loginUser2 = () => {
     //loginUser('pepeo123@gmail.com','Aa$12345');
-    loginUser('pep@gmail.com','Aa$12345',{OS:'web'});
+    loginUser('pep@gmail.com','Aa$12345','web');
   };
   const createExpense3 = async () => {  
     const date = new Date();  

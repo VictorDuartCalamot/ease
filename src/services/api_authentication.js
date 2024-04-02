@@ -28,12 +28,13 @@ export const registerUser = async (name,surname,email,password) => {
   }
 }
 
-export const loginUser = async (email,password,params) => {
+export const loginUser = async (email,password,os) => {
   try {
     const response = await axios.post(baseurl+'users/login/', {
       username: email,
       password: password,
-    },{params});
+      OS: os
+    });
     
     const {token} = response.data;
     // Store access token securely    
