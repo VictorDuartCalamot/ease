@@ -13,7 +13,7 @@ const ButtonsTestsScreen = ({ navigation }) => {
 
   const loginUser2 = async () => {
     //loginUser('pepeo123@gmail.com','Aa$12345');
-    const data = await loginUser('pep@gmail.com','Aa$12345','web')
+    const data = await loginUser('PeP@gmail.com','Aa$12345','web')
     console.log(data);
     if (data){
       console.log(data,'++')
@@ -24,24 +24,25 @@ const ButtonsTestsScreen = ({ navigation }) => {
   const createExpense3 = async () => {  
     const date = new Date();  
     console.log(date)
-    console.log(date.toISOString().substring(11,19).toString())
+    
+    const newTime = date.toISOString().substring(11,19).toString();
     const newDate = date.toISOString().substring(0,10).toString();    
-    createExpense({ title:'lalalala',description:'siisis',amount: 100.2, category: 'Food', creation_date: newDate },await AsyncStorage.getItem('Token'));    
+    createExpense({ title:'lalalala',description:'siisis',amount: 100.2, category: 'Food', creation_date: newDate,creation_time: newTime },await AsyncStorage.getItem('Token'));    
   };
   const deleteExpense4 = async () => {
     deleteExpense('15a2af47-91ef-4c04-a998-ee799599d2c4',await AsyncStorage.getItem('Token'));
   };
   const getExpenses5 = async () => {
-    getExpenses({start_date:'',end_date:''},await AsyncStorage.getItem('Token'));
-    //getExpenses({},await AsyncStorage.getItem('Token'));
+    getExpenses({start_date:'',end_date:'',start_time:'',end_time:''},await AsyncStorage.getItem('Token'));    
   };
   const getOneExpense6 = async () => {
     getOneExpense('4e3344f4-9e37-47b2-aa2f-d88746ae7441',await AsyncStorage.getItem('Token'));        
   };
   const updateExpense7 = async () => {
     const date = new Date();
+    const newTime = date.toISOString().substring(11,19).toString();
     const newDate = date.toISOString().substring(0,10).toString();    
-    updateExpense({ title:'lalalala',description:'siisis',amount: 0, category: 'aaaa', creation_date: newDate },'4e3344f4-9e37-47b2-aa2f-d88746ae7441',await AsyncStorage.getItem('Token'));        
+    updateExpense({ title:'lalalala',description:'siisis',amount: 0, category: 'aaaa', creation_date: newDate,creation_time: newTime },'4e3344f4-9e37-47b2-aa2f-d88746ae7441',await AsyncStorage.getItem('Token'));        
     
   };
 
