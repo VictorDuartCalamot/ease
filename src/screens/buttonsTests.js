@@ -8,12 +8,18 @@ const ButtonsTestsScreen = ({ navigation }) => {
 
   const registerUser1 = () => {
     //navigation.navigate('SignUp')
-    registerUser('pep','pepet','pep@gmail.com','Aa$12345');
+    registerUser('pep','pepet','pep5@gmail.com','Aa$12345');
   };
 
-  const loginUser2 = () => {
+  const loginUser2 = async () => {
     //loginUser('pepeo123@gmail.com','Aa$12345');
-    loginUser('pep@gmail.com','Aa$12345','web');
+    const data = await loginUser('pep@gmail.com','Aa$12345','web')
+    console.log(data);
+    if (data){
+      console.log(data,'++')
+    }else{
+      console.log(data,'--')
+    }
   };
   const createExpense3 = async () => {  
     const date = new Date();  
@@ -62,7 +68,7 @@ const ButtonsTestsScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={updateExpense7}>
         <Text style={styles.buttonText}>Update expense</Text>
       </TouchableOpacity>
-      {/* Add more buttons as needed */}
+      
     </View>
   );
 };

@@ -20,9 +20,9 @@ export const registerUser = async (name,surname,email,password) => {
       email: email,
       password: password,
     });
-    console.log(response.data);
+    console.log(response.data);        
     // Manejo de la respuesta del servidor
-  } catch (error) {
+  } catch (error) {    
     console.error(error);
     // Manejo de errores
   }
@@ -33,17 +33,17 @@ export const loginUser = async (email,password,os) => {
     const response = await axios.post(baseurl+'users/login/', {
       username: email,
       password: password,
-      OS: os
+      os: os
     });
     
     const {token} = response.data;
     // Store access token securely    
     await storeToken(token);
-    console.log(token)   
+    console.log(response.data)   
     //console.log(response.data);
     return response.data;
     // Manejo de la respuesta del servidor
-  } catch (error) {
+  } catch (error) {    
     console.error(error);
     // Manejo de errores
   }
