@@ -13,13 +13,7 @@ const ButtonsTestsScreen = ({ navigation }) => {
 
   const loginUser2 = async () => {
     //loginUser('pepeo123@gmail.com','Aa$12345');
-    const data = await loginUser('PeP@gmail.com','Aa$12345','web')
-    console.log(data);
-    if (data){
-      console.log(data,'++')
-    }else{
-      console.log(data,'--')
-    }
+    await loginUser('PeP@gmail.com','Aa$12345','web')    
   };
   const createExpense3 = async () => {  
     const date = new Date();  
@@ -36,7 +30,7 @@ const ButtonsTestsScreen = ({ navigation }) => {
     getExpenses({start_date:'',end_date:'',start_time:'',end_time:''},await AsyncStorage.getItem('Token'));    
   };
   const getOneExpense6 = async () => {
-    getOneExpense('4e3344f4-9e37-47b2-aa2f-d88746ae7441',await AsyncStorage.getItem('Token'));        
+    getOneExpense('0bf507a3-e52c-43a9-8c74-3ccb5575250c',await AsyncStorage.getItem('Token'));        
   };
   const updateExpense7 = async () => {
     const date = new Date();
@@ -79,7 +73,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white', // set background color to white
+    backgroundColor: 'grey', // set background color to white
   },
   button: {
     backgroundColor: 'black', // set button background color to black
