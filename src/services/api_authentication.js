@@ -20,7 +20,7 @@ export const registerUser = async (name,surname,email,password) => {
       email: email,
       password: password,
     });
-    console.log(response.data);        
+    //console.log(response.data);        
     // Manejo de la respuesta del servidor
   } catch (error) {    
     console.error(error);

@@ -21,22 +21,22 @@ const ButtonsTestsScreen = ({ navigation }) => {
     
     const newTime = date.toISOString().substring(11,19).toString();
     const newDate = date.toISOString().substring(0,10).toString();    
-    createExpense({ title:'lalalala',description:'siisis',amount: 100.2, category: 'Food', creation_date: newDate,creation_time: newTime },await AsyncStorage.getItem('Token'));    
+    createExpense({ title:'lalalala',description:'siisis',amount: 0.1, category: 'Food', creation_date: newDate,creation_time: newTime },await AsyncStorage.getItem('Token'));    
   };
   const deleteExpense4 = async () => {
     deleteExpense('15a2af47-91ef-4c04-a998-ee799599d2c4',await AsyncStorage.getItem('Token'));
   };
   const getExpenses5 = async () => {
-    getExpenses({start_date:'',end_date:'',start_time:'',end_time:''},await AsyncStorage.getItem('Token'));    
+    getExpenses({start_date:'2024-04-08',end_date:'',start_time:'',end_time:''},await AsyncStorage.getItem('Token'));    
   };
   const getOneExpense6 = async () => {
-    getOneExpense('0bf507a3-e52c-43a9-8c74-3ccb5575250c',await AsyncStorage.getItem('Token'));        
+    getOneExpense('fd69a97a-c1c2-4d81-b9e8-b0210d7cc478',await AsyncStorage.getItem('Token'));        
   };
   const updateExpense7 = async () => {
     const date = new Date();
     const newTime = date.toISOString().substring(11,19).toString();
     const newDate = date.toISOString().substring(0,10).toString();    
-    updateExpense({ title:'lalalala',description:'siisis',amount: 0, category: 'aaaa', creation_date: newDate,creation_time: newTime },'4e3344f4-9e37-47b2-aa2f-d88746ae7441',await AsyncStorage.getItem('Token'));        
+    updateExpense({ title:'bebebe',description:'wiwiwi',amount: 0, category: 'aaaa', creation_date: newDate,creation_time: newTime },'0bf507a3-e52c-43a9-8c74-3ccb5575250c',await AsyncStorage.getItem('Token'));        
     
   };
 
