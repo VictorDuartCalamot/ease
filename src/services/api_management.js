@@ -1,14 +1,14 @@
 
 
 import axios from 'axios';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 baseurl = 'https://easeapi.onrender.com/api/'
 
 
-export const createExpense = async (expenseData, token) => {
+export const createExpense = async (expenseData) => {
     try {
         const apiUrl = baseurl+'management/expense/';  // Adjust the URL as per your API endpoint
-
+        token = await AsyncStorage.getItem('Token')
         // Set up request headers with the JWT token
         const headers = {
             'Authorization': `Token ${token}`,
@@ -31,10 +31,10 @@ export const createExpense = async (expenseData, token) => {
 };
 
 
-export const getOneExpense = async (id, token) => {
+export const getOneExpense = async (id) => {
     try {
         const apiUrl = baseurl+'management/expense/';  // Adjust the URL as per your API endpoint
-
+        token = await AsyncStorage.getItem('Token')
         // Set up request headers with the JWT token
         const headers = {
             'Authorization': `Token ${token}`,
@@ -55,10 +55,10 @@ export const getOneExpense = async (id, token) => {
     }
 };
 
-export const getExpenses = async (params, token) => {
+export const getExpenses = async (params) => {
     try {
         const apiUrl = baseurl+'management/expense/';  // Adjust the URL as per your API endpoint
-
+        token = await AsyncStorage.getItem('Token')
         // Set up request headers with the JWT token
         const headers = {
             'Authorization': `Token ${token}`,
@@ -80,10 +80,10 @@ export const getExpenses = async (params, token) => {
     }
 };
 
-export const deleteExpense = async (id, token) => {
+export const deleteExpense = async (id) => {
     try {
         const apiUrl = baseurl+'management/expense/';  // Adjust the URL as per your API endpoint
-
+        token = await AsyncStorage.getItem('Token')
         // Set up request headers with the JWT token
         const headers = {
             'Authorization': `Token ${token}`,
