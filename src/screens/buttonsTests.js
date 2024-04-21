@@ -8,7 +8,7 @@ const ButtonsTestsScreen = ({ navigation }) => {
 
   const registerUser1 = () => {
     //navigation.navigate('SignUp')
-    registerUser('pep','pepet','pep2@gmail.com','Aa$12345');
+    registerUser('pep','pepet','pep@gmail.com','Aa$12345');
   };
 
   const loginUser2 = async () => {
@@ -23,10 +23,10 @@ const ButtonsTestsScreen = ({ navigation }) => {
     
     const newTime = date.toISOString().substring(11,19).toString();
     const newDate = date.toISOString().substring(0,10).toString();    
-    createExpense({ title:'lalalala',description:'siisis',amount: 0.1, creation_date: newDate,creation_time: newTime,category:'8f910f85-38d0-43bc-82c0-714371f92b73',subcategory:'e6612cd7-dfdb-453e-8a45-b5f6e6b41d58'});    
+    createExpense({ title:'lalalala',description:'siisis',amount: 0.1, creation_date: newDate,creation_time: newTime,category:'71d7ac2c-d92f-4b26-8d61-5653ae7d02b9',subcategory:'b2b190a8-3ff0-415a-b4c8-2168ef989cd7'});    
   };
   const deleteExpense4 = async () => {
-    deleteExpense('c0f5eb0a-f133-44ce-9a52-9c71b08276fd');
+    deleteExpense('d93aeb37-9fed-4f96-8226-fef156b521b6');
   };
   const getExpenses5 = async () => {
     getExpenses({start_date:'2024-04-08',end_date:'',start_time:'',end_time:''});    
@@ -89,14 +89,14 @@ const ButtonsTestsScreen = ({ navigation }) => {
   }
 
   const delCategory = async () => {
-    deleteCategory('8f910f85-38d0-43bc-82c0-714371f92b73')
+    deleteCategory('e33b7557-9015-44c5-a1b0-a0032633cfc5')
   }
   const updtCategory = async () => {
     updateCategory({name:'1111',description:'11122',type:'000000',hexColor:'#ffffff'},'de059e38-d6f0-4f43-8ad6-19c1ed0e117e')
   }
 //Subcategories
   const subcategorycreate = async () => {
-    createSubCategory({name:'Combustible',description:'Combustible',hexColor:'#2930CC',category:'8f910f85-38d0-43bc-82c0-714371f92b73'})
+    createSubCategory({name:'Combustible',description:'Combustible',hexColor:'#2930CC',category:'71d7ac2c-d92f-4b26-8d61-5653ae7d02b9'})
   }
   const getAllsubCategories = async () => {
     getSubCategories()
@@ -107,7 +107,7 @@ const ButtonsTestsScreen = ({ navigation }) => {
   }
 
   const delsubCategory = async () => {
-    deleteSubCategory('e6612cd7-dfdb-453e-8a45-b5f6e6b41d58')
+    deleteSubCategory('f9371856-3f71-42f9-b411-efa3dc85c2a3')
   }
   const updtsubCategory = async () => {
     updateSubCategory({name:'1111',description:'11122',type:'000000',hexColor:'#ffffff',category:''},'de059e38-d6f0-4f43-8ad6-19c1ed0e117e')
