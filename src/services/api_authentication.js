@@ -68,6 +68,57 @@ export const registerNewUser = async (data) => {
   }
 }
 
+export const getusers = async () => {
+  try {
+      const apiUrl = baseurl+'superadmin/user/';  // Adjust the URL as per your API endpoint
+      token = await AsyncStorage.getItem('Token')
+      // Set up request headers with the JWT token
+      const headers = {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'application/json'
+      };
+      //console.log(token)
+      //console.log('--------')
+      //console.log(params)
+      // Make the POST request to create the expense
+      const response = await axios.get(apiUrl,{headers});
+      
+      // Return the response data
+      console.log(response.data);
+      return response.data;
+  } catch (error) {
+      // Handle any errors that occur during the request
+      console.error('Error getting subcategories:', error);
+      throw error;
+  }
+};
+
+export const getOneUser = async (id) => {
+  try {
+      const apiUrl = baseurl+'superadmin/user/';  // Adjust the URL as per your API endpoint
+      token = await AsyncStorage.getItem('Token')
+      // Set up request headers with the JWT token
+      const headers = {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'application/json'
+      };
+      //console.log(token)
+      //console.log('--------')
+      //console.log(params)
+      // Make the POST request to create the expense
+      const response = await axios.get(apiUrl+id+'/',{headers});
+      
+      // Return the response data
+      console.log(response.data);
+      return response.data;
+  } catch (error) {
+      // Handle any errors that occur during the request
+      console.error('Error getting subcategories:', error);
+      throw error;
+  }
+};
+
+
 export const deleteUser = async (id) => {
   try{
     token = await AsyncStorage.getItem('Token')
