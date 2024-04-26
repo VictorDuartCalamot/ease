@@ -49,6 +49,26 @@ export const loginUser = async (email,password,os) => {
   }
 }
 
+export const logout = async () => {
+  try {
+    token = await AsyncStorage.getItem('Token')
+    const headers = {
+      'Authorization': `Token ${token}`,
+      'Content-Type': 'application/json'
+    };
+
+    const response = await axios.get(baseurl+'users/logout/',{headers})            
+    
+    console.log(response.data)   
+    //console.log(response.data);
+    return response.data;
+    // Manejo de la respuesta del servidor
+  } catch (error) {    
+    console.error(error);
+    // Manejo de errores
+  }
+}
+
 export const registerNewUser = async (data) => {
   try {
     console.log(data);
@@ -57,7 +77,7 @@ export const registerNewUser = async (data) => {
     const headers = {
       'Authorization': `Token ${token}`,
       'Content-Type': 'application/json'
-  };
+    };
     const response = await axios.post(baseurl+'superadmin/user/', data, {headers});
     //console.log(response.data);        
     // Manejo de la respuesta del servidor

@@ -1,7 +1,7 @@
 // MyScreen.js
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet,ScrollView } from 'react-native';
-import {registerUser,loginUser,registerNewUser,deleteUser,updateUser,updateUserAccountStatus,getOneUser,getusers} from "../services/api_authentication" // Import your functions
+import {registerUser,loginUser,registerNewUser,deleteUser,updateUser,updateUserAccountStatus,getOneUser,getusers, logout} from "../services/api_authentication" // Import your functions
 import { getCategories, createCategory, createExpense, deleteExpense, getExpenses, getOneExpense, updateExpense, updateCategory, deleteCategory,getCategory,getSubCategories,getSubCategory,createSubCategory,deleteSubCategory,updateSubCategory } from '../services/api_management'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const ButtonsTestsScreen = ({ navigation }) => {
@@ -15,6 +15,10 @@ const ButtonsTestsScreen = ({ navigation }) => {
     //loginUser('pepeo123@gmail.com','Aa$12345');
     await loginUser('pep@gmail.com','Aa$12345','web')    
   };
+
+  const logoutButton = async () => {
+    await logout()
+  }
 
   //Expenses
   const createExpense3 = async () => {  
@@ -121,6 +125,9 @@ const ButtonsTestsScreen = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={loginUser2}>
           <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={logoutButton}>
+          <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={getUsersf}>
           <Text style={styles.buttonText}>Get Users</Text>
