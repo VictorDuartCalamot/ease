@@ -26,11 +26,12 @@ const ButtonsTestsScreen = ({ navigation }) => {
     console.log(date)
     
     const newTime = date.toISOString().substring(11,19).toString();
-    const newDate = date.toISOString().substring(0,10).toString();    
-    createExpense({ title:'lalalala',description:'siisis',amount: 0.1, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subcategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'});    
+    const newDate = date.toISOString().substring(0,10).toString(); 
+    console.log(newTime + ' ' + newDate)   
+    createExpense({ title:'111',description:'si22s',amount: 50, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subcategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'});    
   };
   const deleteExpense4 = async () => {
-    deleteExpense('d93aeb37-9fed-4f96-8226-fef156b521b6');
+    deleteExpense('3f7a011b-40f1-4b49-83ab-14c3ddedde7e');
   };
   const getExpenses5 = async () => {
     getExpenses({start_date:'2024-04-08',end_date:'',start_time:'',end_time:''});    
@@ -42,7 +43,7 @@ const ButtonsTestsScreen = ({ navigation }) => {
     const date = new Date();
     const newTime = date.toISOString().substring(11,19).toString();
     const newDate = date.toISOString().substring(0,10).toString();    
-    updateExpense({ title:'bebebe',description:'wiwiwi',amount: 0, creation_date: newDate,creation_time: newTime,category:'1638582c-1cf8-41d7-b221-ce481ecef1e5',subCategory:'' },'0bf507a3-e52c-43a9-8c74-3ccb5575250c',await AsyncStorage.getItem('Token'));        
+    updateExpense({ title:'222',description:'122',amount: 3, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subCategory:'07629f06-b980-4b51-b0d6-7ee952f59fac' },'3f7a011b-40f1-4b49-83ab-14c3ddedde7e');        
     
   };
 
@@ -53,22 +54,22 @@ const createIncomeF = async () => {
   
   const newTime = date.toISOString().substring(11,19).toString();
   const newDate = date.toISOString().substring(0,10).toString();    
-  createIncome({ title:'lalalala',description:'siisis',amount: 0.1, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subcategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'});    
+  createIncome({title:'lalalala',description:'siisis',amount: 0.1, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subcategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'});    
 };
 const deleteIncomeF = async () => {
-  deleteIncome('d93aeb37-9fed-4f96-8226-fef156b521b6');
+  deleteIncome('dbb5ac6b-1072-4253-8ab7-e6f0bc19f510');
 };
 const getIncomesF = async () => {
   getIncomes({start_date:'2024-04-08',end_date:'',start_time:'',end_time:''});    
 };
 const getOneIncomeF = async () => {
-  getOneIncome('fd69a97a-c1c2-4d81-b9e8-b0210d7cc478');        
+  getOneIncome('5335eba0-3d73-4cbc-8124-445d87138a55');        
 };
 const updateIncomeF = async () => {
   const date = new Date();
   const newTime = date.toISOString().substring(11,19).toString();
   const newDate = date.toISOString().substring(0,10).toString();    
-  updateIncome({ title:'bebebe',description:'wiwiwi',amount: 0, creation_date: newDate,creation_time: newTime,category:'1638582c-1cf8-41d7-b221-ce481ecef1e5',subCategory:'' },'0bf507a3-e52c-43a9-8c74-3ccb5575250c');            
+  updateIncome({title:'bebebe',description:'wiwiwi',amount: 5, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subCategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'},'179b3e70-66e6-4de2-8c9b-70d119c99810');            
 };
 //Users
 
