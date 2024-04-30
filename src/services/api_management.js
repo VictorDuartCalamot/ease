@@ -131,6 +131,132 @@ export const updateExpense = async (expenseData,id) => {
     }
 };
 
+export const createIncome = async (incomeData) => {
+    try {
+        const apiUrl = baseurl+'management/income/';  // Adjust the URL as per your API endpoint
+        token = await AsyncStorage.getItem('Token')
+        // Set up request headers with the JWT token
+        const headers = {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json'
+        };
+        console.log(token)
+        console.log('--------')
+        console.log(incomeData)
+        // Make the POST request to create the expense
+        const response = await axios.post(apiUrl, incomeData, { headers });
+       
+        // Return the response data
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        // Handle any errors that occur during the request
+        console.error('Error creating expense:', error);
+        throw error;
+    }
+};
+
+
+
+export const getOneIncome = async (id) => {
+    try {
+        const apiUrl = baseurl+'management/income/';  // Adjust the URL as per your API endpoint
+        token = await AsyncStorage.getItem('Token')
+        // Set up request headers with the JWT token
+        const headers = {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json'
+        };
+        console.log(token)
+        console.log('--------')        
+        // Make the POST request to create the expense
+        const response = await axios.get(apiUrl+id+'/',{headers});
+        
+        // Return the response data
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        // Handle any errors that occur during the request
+        console.error('Error getting expense:', error);
+        throw error;
+    }
+};
+
+export const getIncomes = async (params) => {
+    try {
+        const apiUrl = baseurl+'management/income/';  // Adjust the URL as per your API endpoint
+        token = await AsyncStorage.getItem('Token')
+        // Set up request headers with the JWT token
+        const headers = {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json'
+        };
+        //console.log(token)
+        //console.log('--------')
+        //console.log(params)
+        // Make the POST request to create the expense
+        const response = await axios.get(apiUrl,{headers,params});
+        
+        // Return the response data
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        // Handle any errors that occur during the request
+        console.error('Error getting expenses:', error);
+        throw error;
+    }
+};
+
+export const deleteIncome = async (id) => {
+    try {
+        const apiUrl = baseurl+'management/income/';  // Adjust the URL as per your API endpoint
+        token = await AsyncStorage.getItem('Token')
+        // Set up request headers with the JWT token
+        const headers = {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json'
+        };
+        console.log(token)
+        console.log('--------')
+        console.log(id)
+        // Make the POST request to create the expense
+        const response = await axios.delete(apiUrl+id+'/', { headers });
+        
+        // Return the response data
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        // Handle any errors that occur during the request
+        console.error('Error deleting expense:', error);
+        throw error;
+    }
+};
+
+
+export const updateIncome = async (incomeData,id) => {
+    try {
+        const apiUrl = baseurl+'management/income/';  // Adjust the URL as per your API endpoint
+        token = await AsyncStorage.getItem('Token')
+        // Set up request headers with the JWT token
+        const headers = {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json'
+        };
+        console.log(token)
+        console.log('--------')
+        console.log(incomeData)
+        // Make the POST request to create the expense
+        const response = await axios.put(apiUrl+id+'/', incomeData, { headers });
+       
+        // Return the response data
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        // Handle any errors that occur during the request
+        console.error('Error creating expense:', error);
+        throw error;
+    }
+};
 
 export const getCategories = async () => {
     try {

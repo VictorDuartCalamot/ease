@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet,ScrollView } from 'react-native';
 import {registerUser,loginUser,registerNewUser,deleteUser,updateUser,updateUserAccountStatus,getOneUser,getusers, logout} from "../services/api_authentication" // Import your functions
-import { getCategories, createCategory, createExpense, deleteExpense, getExpenses, getOneExpense, updateExpense, updateCategory, deleteCategory,getCategory,getSubCategories,getSubCategory,createSubCategory,deleteSubCategory,updateSubCategory } from '../services/api_management'
+import { getCategories, createCategory, createExpense, deleteExpense, getExpenses, getOneExpense, updateExpense, updateCategory, deleteCategory,getCategory,getSubCategories,getSubCategory,createSubCategory,deleteSubCategory,updateSubCategory,getIncomes,createIncome,deleteIncome,getOneIncome,updateIncome } from '../services/api_management'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const ButtonsTestsScreen = ({ navigation }) => {
 
@@ -27,7 +27,7 @@ const ButtonsTestsScreen = ({ navigation }) => {
     
     const newTime = date.toISOString().substring(11,19).toString();
     const newDate = date.toISOString().substring(0,10).toString();    
-    createExpense({ title:'lalalala',description:'siisis',amount: 0.1, creation_date: newDate,creation_time: newTime,category:'71d7ac2c-d92f-4b26-8d61-5653ae7d02b9',subcategory:'b2b190a8-3ff0-415a-b4c8-2168ef989cd7'});    
+    createExpense({ title:'lalalala',description:'siisis',amount: 0.1, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subcategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'});    
   };
   const deleteExpense4 = async () => {
     deleteExpense('d93aeb37-9fed-4f96-8226-fef156b521b6');
@@ -45,6 +45,31 @@ const ButtonsTestsScreen = ({ navigation }) => {
     updateExpense({ title:'bebebe',description:'wiwiwi',amount: 0, creation_date: newDate,creation_time: newTime,category:'1638582c-1cf8-41d7-b221-ce481ecef1e5',subCategory:'' },'0bf507a3-e52c-43a9-8c74-3ccb5575250c',await AsyncStorage.getItem('Token'));        
     
   };
+
+//Income
+const createIncomeF = async () => {  
+  const date = new Date();  
+  console.log(date)
+  
+  const newTime = date.toISOString().substring(11,19).toString();
+  const newDate = date.toISOString().substring(0,10).toString();    
+  createIncome({ title:'lalalala',description:'siisis',amount: 0.1, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subcategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'});    
+};
+const deleteIncomeF = async () => {
+  deleteIncome('d93aeb37-9fed-4f96-8226-fef156b521b6');
+};
+const getIncomesF = async () => {
+  getIncomes({start_date:'2024-04-08',end_date:'',start_time:'',end_time:''});    
+};
+const getOneIncomeF = async () => {
+  getOneIncome('fd69a97a-c1c2-4d81-b9e8-b0210d7cc478');        
+};
+const updateIncomeF = async () => {
+  const date = new Date();
+  const newTime = date.toISOString().substring(11,19).toString();
+  const newDate = date.toISOString().substring(0,10).toString();    
+  updateIncome({ title:'bebebe',description:'wiwiwi',amount: 0, creation_date: newDate,creation_time: newTime,category:'1638582c-1cf8-41d7-b221-ce481ecef1e5',subCategory:'' },'0bf507a3-e52c-43a9-8c74-3ccb5575250c');            
+};
 //Users
 
   const getUsersf = async () => {
@@ -100,7 +125,7 @@ const ButtonsTestsScreen = ({ navigation }) => {
   }
 //Subcategories
   const subcategorycreate = async () => {
-    createSubCategory({name:'Combustible',description:'Combustible',hexColor:'#2930CC',category:'71d7ac2c-d92f-4b26-8d61-5653ae7d02b9'})
+    createSubCategory({name:'Combustible',description:'Combustible',hexColor:'#2930CC',category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c'})
   }
   const getAllsubCategories = async () => {
     getSubCategories()
@@ -162,7 +187,23 @@ const ButtonsTestsScreen = ({ navigation }) => {
         </TouchableOpacity>        
         <TouchableOpacity style={styles.button} onPress={updateExpense7}>
           <Text style={styles.buttonText}>Update expense</Text>
+        </TouchableOpacity>  
+
+        <TouchableOpacity style={styles.button} onPress={getIncomesF}>
+          <Text style={styles.buttonText}>Get Incomes</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={getOneIncomeF}>
+          <Text style={styles.buttonText}>Get ONE Income</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={createIncomeF}>
+          <Text style={styles.buttonText}>Create Income</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={deleteIncomeF}>
+          <Text style={styles.buttonText}>Delete Income</Text>
         </TouchableOpacity>        
+        <TouchableOpacity style={styles.button} onPress={updateIncomeF}>
+          <Text style={styles.buttonText}>Update Income</Text>
+        </TouchableOpacity>    
 
         <TouchableOpacity style={styles.button} onPress={getAllCategories}>
           <Text style={styles.buttonText}>Get categories</Text>
