@@ -69,6 +69,27 @@ export const logout = async () => {
   }
 }
 
+export const changepassword = async (data) => {
+  try {
+    token = await AsyncStorage.getItem('Token')
+    const headers = {
+      'Authorization': `Token ${token}`,
+      'Content-Type': 'application/json'
+    };
+
+    const response = await axios.put(baseurl+'users/changepwd/',data,{headers})            
+    
+    console.log(response.data)   
+    //console.log(response.data);
+    return response.data;
+    // Manejo de la respuesta del servidor
+  } catch (error) {    
+    console.error(error);
+    // Manejo de errores
+  }
+}
+
+
 export const registerNewUser = async (data) => {
   try {
     console.log(data);

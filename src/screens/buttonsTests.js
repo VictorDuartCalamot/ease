@@ -1,9 +1,8 @@
 // MyScreen.js
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet,ScrollView } from 'react-native';
-import {registerUser,loginUser,registerNewUser,deleteUser,updateUser,updateUserAccountStatus,getOneUser,getusers, logout} from "../services/api_authentication" // Import your functions
+import {registerUser,loginUser,registerNewUser,deleteUser,updateUser,updateUserAccountStatus,getOneUser,getusers, logout,changepassword} from "../services/api_authentication" // Import your functions
 import { getCategories, createCategory, createExpense, deleteExpense, getExpenses, getOneExpense, updateExpense, updateCategory, deleteCategory,getCategory,getSubCategories,getSubCategory,createSubCategory,deleteSubCategory,updateSubCategory,getIncomes,createIncome,deleteIncome,getOneIncome,updateIncome } from '../services/api_management'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 const ButtonsTestsScreen = ({ navigation }) => {
 
   const registerUser1 = () => {
@@ -13,11 +12,15 @@ const ButtonsTestsScreen = ({ navigation }) => {
 
   const loginUser2 = async () => {
     //loginUser('pepeo123@gmail.com','Aa$12345');
-    await loginUser('pep@gmail.com','Aa$12345','web')    
+    await loginUser('pep@gmail.com','Aa$123456!','web')    
   };
 
   const logoutButton = async () => {
     await logout()
+  }
+
+  const changepasswordF = async () => {
+    changepassword({current_password:'Aa$12345',new_password:'Aa$123456!'})
   }
 
   //Expenses
@@ -28,22 +31,23 @@ const ButtonsTestsScreen = ({ navigation }) => {
     const newTime = date.toISOString().substring(11,19).toString();
     const newDate = date.toISOString().substring(0,10).toString(); 
     console.log(newTime + ' ' + newDate)   
-    createExpense({ title:'111',description:'si22s',amount: 50, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subcategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'});    
+    createExpense({ title:'2222',description:'0000',amount: 50, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subcategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'});    
   };
   const deleteExpense4 = async () => {
-    deleteExpense('3f7a011b-40f1-4b49-83ab-14c3ddedde7e');
+    deleteExpense('e801a3d5-6506-4e39-a136-c5e358e362d8');
   };
   const getExpenses5 = async () => {
     getExpenses({start_date:'2024-04-08',end_date:'',start_time:'',end_time:''});    
   };
   const getOneExpense6 = async () => {
-    getOneExpense('fd69a97a-c1c2-4d81-b9e8-b0210d7cc478');        
+    getOneExpense('e801a3d5-6506-4e39-a136-c5e358e362d8');        
   };
   const updateExpense7 = async () => {
     const date = new Date();
     const newTime = date.toISOString().substring(11,19).toString();
     const newDate = date.toISOString().substring(0,10).toString();    
-    updateExpense({ title:'222',description:'122',amount: 3, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subCategory:'07629f06-b980-4b51-b0d6-7ee952f59fac' },'3f7a011b-40f1-4b49-83ab-14c3ddedde7e');        
+    //updateExpense({ title:'222',description:'122',amount: 3, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subCategory:'07629f06-b980-4b51-b0d6-7ee952f59fac' },'3f7a011b-40f1-4b49-83ab-14c3ddedde7e');
+    updateExpense({title:'00000',description:'111',amount: 25, creation_date: newTime,creation_time: newDate,category: 'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subCategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'},'e801a3d5-6506-4e39-a136-c5e358e362d8');
     
   };
 
@@ -63,13 +67,13 @@ const getIncomesF = async () => {
   getIncomes({start_date:'2024-04-08',end_date:'',start_time:'',end_time:''});    
 };
 const getOneIncomeF = async () => {
-  getOneIncome('5335eba0-3d73-4cbc-8124-445d87138a55');        
+  getOneIncome('abc6f90f-7f0b-498e-9462-ee5b4234aa54');        
 };
 const updateIncomeF = async () => {
   const date = new Date();
   const newTime = date.toISOString().substring(11,19).toString();
   const newDate = date.toISOString().substring(0,10).toString();    
-  updateIncome({title:'bebebe',description:'wiwiwi',amount: 5, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subCategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'},'179b3e70-66e6-4de2-8c9b-70d119c99810');            
+  updateIncome({title:'zzzz',description:'zzzz',amount: 5112, creation_date: newTime,creation_time: newDate,category: 'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subCategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'},'abc6f90f-7f0b-498e-9462-ee5b4234aa54');            
 };
 //Users
 
@@ -154,6 +158,9 @@ const updateIncomeF = async () => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={logoutButton}>
           <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={changepasswordF}>
+          <Text style={styles.buttonText}>Change password</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={getUsersf}>
           <Text style={styles.buttonText}>Get Users</Text>
