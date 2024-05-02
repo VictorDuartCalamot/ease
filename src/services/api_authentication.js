@@ -129,7 +129,7 @@ export const getusers = async (params) => {
       return response.data;
   } catch (error) {
       // Handle any errors that occur during the request
-      console.error('Error getting subcategories:', error);
+      console.error('Error getting users:', error);
       throw error;
   }
 };

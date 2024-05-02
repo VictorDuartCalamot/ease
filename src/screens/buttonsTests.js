@@ -7,12 +7,12 @@ const ButtonsTestsScreen = ({ navigation }) => {
 
   const registerUser1 = () => {
     //navigation.navigate('SignUp')
-    registerUser('pep','pepet','pep@gmail.com','Aa$12345');
+    registerUser('pep','pepet','newpep@gmail.com','Aa$12345');
   };
 
   const loginUser2 = async () => {
     //loginUser('pepeo123@gmail.com','Aa$12345');
-    await loginUser('pep@gmail.com','Aa$123456!','web')    
+    await loginUser('newpep@gmail.com','Aa$12345','web')    
   };
 
   const logoutButton = async () => {
@@ -78,7 +78,14 @@ const updateIncomeF = async () => {
 //Users
 
   const getUsersf = async () => {
-    getusers({is_active: false})
+    //DATETIME VALUES ! ! !
+    //Available optional fields
+    //is_active Boolean
+    //is_superuser Boolean
+    //is_staff Boolean
+    //start_date datetime
+    //end_date datetime
+    getusers({start_date:'2024-04-26 00:00:00',end_date:'2024-04-26 23:59:59'})
   }
   const getOneUserf = async () => {
     getOneUser(2)
