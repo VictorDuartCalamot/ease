@@ -78,7 +78,7 @@ const updateIncomeF = async () => {
 //Users
 
   const getUsersf = async () => {
-    getusers()
+    getusers({is_active: false})
   }
   const getOneUserf = async () => {
     getOneUser(2)

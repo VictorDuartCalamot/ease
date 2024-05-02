@@ -109,7 +109,7 @@ export const registerNewUser = async (data) => {
   }
 }
 
-export const getusers = async () => {
+export const getusers = async (params) => {
   try {
       const apiUrl = baseurl+'superadmin/user/';  // Adjust the URL as per your API endpoint
       token = await AsyncStorage.getItem('Token')
@@ -122,7 +122,7 @@ export const getusers = async () => {
       //console.log('--------')
       //console.log(params)
       // Make the POST request to create the expense
-      const response = await axios.get(apiUrl,{headers});
+      const response = await axios.get(apiUrl,{headers,params});
       
       // Return the response data
       console.log(response.data);
