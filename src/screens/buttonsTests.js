@@ -91,13 +91,15 @@ const updateIncomeF = async () => {
     getOneUser(2)
   }
   const newUserAdmin = async () => {
+    //is_staff Boolean
+    //is_active Boolean
+    //is_superuser Boolean    
     registerNewUser({
       first_name:'pep2',
       last_name:'pep1',      
       password:'Aa$12345',
-      email:'pepepe@gmail.com.com',
-      is_staff: true,
-      is_superuser: false})
+      email:'000000111@gmail.com.com',
+      })
   };
 
   const delUser = async () => {
@@ -119,7 +121,7 @@ const updateIncomeF = async () => {
   }
   //Categories
   const categorycreate = async () => {
-    createCategory({name:'Transporte',description:'Transporte publico',type:'Transporte',hexColor:'#2930CC'})
+    createCategory({name:'Ocio',description:'Ocio',type:'Ocio',hexColor:'#2623CC'})
   }
   const getAllCategories = async () => {
     getCategories()
@@ -137,10 +139,12 @@ const updateIncomeF = async () => {
   }
 //Subcategories
   const subcategorycreate = async () => {
-    createSubCategory({name:'Combustible',description:'Combustible',hexColor:'#2930CC',category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c'})
+    createSubCategory({name:'Aceite',description:'Combustible',hexColor:'#2210CC',category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c'})
   }
   const getAllsubCategories = async () => {
-    getSubCategories()
+    //OPTIONAL FIELD
+    //category uuid
+    getSubCategories({category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c'})
   }
 
   const getOnesubCategory = async () => {
