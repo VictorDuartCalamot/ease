@@ -91,6 +91,7 @@ const updateIncomeF = async () => {
     getOneUser(2)
   }
   const newUserAdmin = async () => {
+    //Optional fields
     //is_staff Boolean
     //is_active Boolean
     //is_superuser Boolean    
