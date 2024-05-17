@@ -3,16 +3,17 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet,ScrollView } from 'react-native';
 import {registerUser,loginUser,registerNewUser,deleteUser,updateUser,updateUserAccountStatus,getOneUser,getusers, logout,changepassword} from "../services/api_authentication" // Import your functions
 import { getCategories, createCategory, createExpense, deleteExpense, getExpenses, getOneExpense, updateExpense, updateCategory, deleteCategory,getCategory,getSubCategories,getSubCategory,createSubCategory,deleteSubCategory,updateSubCategory,getIncomes,createIncome,deleteIncome,getOneIncome,updateIncome } from '../services/api_management'
+import {getOrCreateChat} from '../services/api_chat'
 const ButtonsTestsScreen = ({ navigation }) => {
 
   const registerUser1 = () => {
     //navigation.navigate('SignUp')
-    registerUser('pep','pepet','newpep@gmail.com','Aa$12345');
+    registerUser('pep','pepet','newpep3333@gmail.com','Aa$12345');
   };
 
   const loginUser2 = async () => {
     //loginUser('pepeo123@gmail.com','Aa$12345');
-    await loginUser('newpep@gmail.com','Aa$12345','web')    
+    await loginUser('newpep3333@gmail.com','Aa$12345','web')    
   };
 
   const logoutButton = async () => {
@@ -31,7 +32,7 @@ const ButtonsTestsScreen = ({ navigation }) => {
     const newTime = date.toISOString().substring(11,19).toString();
     const newDate = date.toISOString().substring(0,10).toString(); 
     console.log(newTime + ' ' + newDate)   
-    createExpense({ title:'2222',description:'0000',amount: 50, creation_date: newDate,creation_time: newTime,category:'e2191c44-28e7-43f8-8e96-ac6f425b8f1c',subcategory:'07629f06-b980-4b51-b0d6-7ee952f59fac'});    
+    createExpense({ title:'2222',description:'0000',amount: 1.222, creation_date: newDate,creation_time: newTime,category:'b7a46be6-ea57-4eae-b4ce-9c0fe3430ea8',subcategory:'8b7d9faa-f302-47fe-86cc-043c334496a6'});    
   };
   const deleteExpense4 = async () => {
     deleteExpense('e801a3d5-6506-4e39-a136-c5e358e362d8');
@@ -159,6 +160,9 @@ const updateIncomeF = async () => {
     updateSubCategory({name:'1111',description:'11122',type:'000000',hexColor:'#ffffff',category:''},'de059e38-d6f0-4f43-8ad6-19c1ed0e117e')
   }
   
+  const getOrCreateChatF = async () => {
+    getOrCreateChat()
+  }
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer } keyboardShouldPersistTaps="handled">
       <View style={styles.container}>
@@ -256,6 +260,10 @@ const updateIncomeF = async () => {
         <TouchableOpacity style={styles.button} onPress={updtsubCategory}>
           <Text style={styles.buttonText}>update subcategory</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={getOrCreateChatF}>
+          <Text style={styles.buttonText}>Get or Create Chat</Text>
+        </TouchableOpacity>
         
       </View>
     </ScrollView>
@@ -267,22 +275,24 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'grey',
+    backgroundColor: 'white',
   },
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'grey',
+    backgroundColor: 'white',
     minHeight: '100%',
   },
   button: {
-    backgroundColor: 'black',
+    borderWidth: 2,
+    borderColor: 'black',
+    backgroundColor: 'white',
     padding: 10,
     margin: 5,
     borderRadius: 5,
   },
   buttonText: {
-    color: 'white',
+    color: 'black',
     fontSize: 16,
   },
 });
